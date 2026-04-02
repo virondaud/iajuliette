@@ -187,7 +187,12 @@ const MATS=[
      fiches:[{id:"verbes-irreguliers_fiche",name:"Verbes Irréguliers",lbl:"Fiche",ic:"📋"}],
      exercices:[{id:"verbes-irreguliers_quizlet",name:"Verbes Irréguliers",lbl:"Quizlet",ic:"✏️"}],
      corrections:[]}},
-  {id:"francais",name:"Français",emoji:"📖",color:"#e74c3c",bb:"#fde8e8",bt:"#e74c3c",docs:{fiches:[],exercices:[],corrections:[]}},
+  {id:"francais",name:"Français",emoji:"📖",color:"#e74c3c",bb:"#fde8e8",bt:"#e74c3c",docs:{fiches:[
+    {id:"figures-de-style_fiche",name:"Figures de Style — Cours",lbl:"Fiche",ic:"📋"},
+    {id:"figures-de-style-exemples-litteraires_fiche",name:"Figures de Style — Exemples littéraires",lbl:"Fiche",ic:"📖"}
+  ],exercices:[
+    {id:"figures-de-style_quizlet",name:"Figures de Style",lbl:"Quizlet",ic:"🎯"}
+  ],corrections:[]}},
   {id:"maths",name:"Mathématiques",emoji:"🔢",color:"#9b59b6",bb:"#f5eef8",bt:"#9b59b6",docs:{fiches:[],exercices:[],corrections:[]}},
   {id:"histgeo",name:"Histoire-Géo",emoji:"🌍",color:"#e67e22",bb:"#fef5e7",bt:"#e67e22",docs:{fiches:[],exercices:[],corrections:[]}},
   {id:"svt",name:"SVT",emoji:"🌿",color:"#27ae60",bb:"#eafaf1",bt:"#27ae60",docs:{fiches:[],exercices:[],corrections:[]}},
@@ -606,6 +611,182 @@ function rPrompt(){
    '④ Mettre à jour <b>index.html</b> (MATS + RND map + renderer)')}
  </div>`;}
 
+/* ══ FRANÇAIS — DONNÉES ══ */
+const FR_CATS={
+  comp:   {label:'Comparaison',  c:'#2980b9',l:'#D6EAF8'},
+  oppos:  {label:'Opposition',   c:'#8e44ad',l:'#E8DAEF'},
+  insist: {label:'Insistance',   c:'#c0392b',l:'#FADBD8'},
+  attn:   {label:'Atténuation',  c:'#27ae60',l:'#D5F5E3'},
+  diction:{label:'Diction',      c:'#d35400',l:'#FAE5D3'},
+};
+const FR_FIGS=[
+  ['comparaison',"La Comparaison",'comp',"Rapprochement via un outil (comme, tel, pareil à…)","Ses yeux étaient comme deux perles.","La Terre est bleue comme une orange. (Éluard)"],
+  ['metaphore',"La Métaphore",'comp',"Comparaison sans outil de comparaison","La lune est une faucille d'or.","Ma jeunesse ne fut qu'un ténébreux orage. (Baudelaire)"],
+  ['personnification',"La Personnification",'comp',"Caractéristiques humaines données à un objet ou animal","La maison de vos rêves vient de naître.","Le vent qui vient à travers la montagne me rendra fou. (Hugo)"],
+  ['antithese',"L'Antithèse",'oppos',"Opposition de deux termes dans une phrase","Le plus grand des petits déjeuners.","Je vis, je meurs ; je me brûle et me noie. (Louise Labé)"],
+  ['oxymore',"L'Oxymore",'oppos',"Deux termes de sens incompatibles liés ensemble","La douce violence d'un parfum.","Cette obscure clarté qui tombe des étoiles. (Corneille)"],
+  ['antiphrase',"L'Antiphrase",'oppos',"Énoncé à comprendre à l'inverse — crée l'ironie","\"Bravo !\" dit le prof pour un mauvais travail.","\"Ah, quelle brillante idée !\" (dit ironiquement)"],
+  ['gradation',"La Gradation",'insist',"Énumération par ordre de progression","Je me meurs, je suis mort, je suis enterré. (Molière)","Va, cours, vole et nous venge ! (Corneille)"],
+  ['parallelisme',"Le Parallélisme",'insist',"Répétition d'une même structure syntaxique","L'un est blanc ; l'autre est pâle.","Je pense, donc je suis. (Descartes)"],
+  ['anaphore',"L'Anaphore",'insist',"Répétition d'un mot en début de vers ou paragraphe","Rappelle-toi, rappelle-toi, Barbara. (Prévert)","Waterloo ! Waterloo ! Waterloo ! Morne plaine ! (Hugo)"],
+  ['hyperbole',"L'Hyperbole",'insist',"Exagération volontaire","Je meurs de faim !","J'ai pleuré des fleuves de larmes."],
+  ['euphemisme',"L'Euphémisme",'attn',"Expression douce pour une réalité difficile","Il nous a quittés. (= il est mort)","Les personnes du troisième âge. (= les vieux)"],
+  ['litote',"La Litote",'attn',"Dire le moins pour exprimer le plus","Je ne te hais point. (Corneille) = je t'aime","Va, je ne te hais point. (Le Cid — Chimène)"],
+  ['onomatopee',"L'Onomatopée",'diction',"Mot qui imite un son","Coucou ! / Atchoum !","Cocorico ! cria le coq. / Hou, hou, hou…"],
+  ['alliteration',"L'Allitération",'diction',"Répétition d'un même son consonantique","Tout m'afflige et me nuit et conspire à me nuire. (Racine)","Pour qui sont ces serpents qui sifflent sur vos têtes ? (Racine)"],
+];
+
+/* ── Fiche cours ── */
+function rFiguresFiche(){
+  const secs=Object.entries({
+    'I. Comparaison':FR_FIGS.filter(f=>f[2]==='comp'),
+    "II. Opposition":FR_FIGS.filter(f=>f[2]==='oppos'),
+    "III. Insistance":FR_FIGS.filter(f=>f[2]==='insist'),
+    "IV. Atténuation":FR_FIGS.filter(f=>f[2]==='attn'),
+    "V. Diction":FR_FIGS.filter(f=>f[2]==='diction'),
+  });
+  const catKeys=['comp','oppos','insist','attn','diction'];
+  return `<div style='padding:0 6px'>
+  <div style='background:#1a1a2e;color:#fff;border-radius:10px;padding:12px 16px;text-align:center;margin-bottom:10px'>
+    <div style='font-size:1.1em;font-weight:800'>📚 Les Figures de Style</div>
+    <div style='font-size:.8em;opacity:.75;margin-top:3px'>Français · 4ème · Fiche de cours</div>
+  </div>
+  ${secs.map(([title,figs],si)=>{const cat=FR_CATS[catKeys[si]];return `
+  <div style='border-radius:8px;overflow:hidden;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.07)'>
+    <div style='background:${cat.c};color:#fff;padding:8px 12px;font-weight:700;font-size:.92em'>${title}</div>
+    ${figs.map(f=>`
+    <div style='display:flex;border-bottom:1px solid #eee;background:#fff'>
+      <div style='min-width:110px;max-width:110px;padding:8px;background:${cat.l};color:${cat.c};font-weight:700;font-size:.82em'>${f[1]}</div>
+      <div style='flex:1;padding:7px 9px'>
+        <div style='font-size:.8em;color:#444;line-height:1.4'>${f[3]}</div>
+        <div style='font-size:.79em;font-style:italic;color:#2c3e50;background:#f9f9f9;border-left:3px solid ${cat.c};padding:3px 7px;margin-top:4px;border-radius:0 3px 3px 0'>${f[4]}</div>
+      </div>
+    </div>`).join('')}
+  </div>`}).join('')}
+  </div>`;}
+
+/* ── Fiche exemples littéraires ── */
+function rFiguresExFiche(){
+  const litEx=[
+    ["La Comparaison","La Terre est bleue comme une orange.","Paul Éluard","Mon âme est si pareille à la nuit douce et noire.","Paul Verlaine"],
+    ["La Métaphore","Ma jeunesse ne fut qu'un ténébreux orage.","Charles Baudelaire","Waterloo ! Waterloo ! Morne plaine ! (la plaine = champ de bataille)","Victor Hugo"],
+    ["La Personnification","Le vent qui vient à travers la montagne me rendra fou.","Victor Hugo, Hernani","La mer pleurait en se brisant sur les rochers.","Lamartine"],
+    ["L'Antithèse","Je vis, je meurs ; je me brûle et me noie.","Louise Labé","Du sublime au ridicule, il n'y a qu'un pas.","Napoléon"],
+    ["L'Oxymore","Cette obscure clarté qui tombe des étoiles.","Corneille, Le Cid","Un soleil noir de mélancolie.","Nerval, El Desdichado"],
+    ["L'Antiphrase","\"Ah, quelle brillante idée !\" (dit ironiquement)","Ironie courante","Il est malin comme une valise sans poignée.","Expression populaire"],
+    ["La Gradation","Va, cours, vole et nous venge !","Corneille, Le Cid","Un souffle, une vapeur, une ombre, rien.","Victor Hugo"],
+    ["Le Parallélisme","Je pense, donc je suis.","René Descartes","Partir, c'est mourir un peu ; mourir, c'est partir beaucoup.","Edmond Haraucourt"],
+    ["L'Anaphore","Waterloo ! Waterloo ! Waterloo ! Morne plaine !","Victor Hugo, Les Châtiments","Demain, dès l'aube… Je marcherai… Je ne puis demeurer…","Victor Hugo, Les Contemplations"],
+    ["L'Hyperbole","J'ai pleuré des fleuves de larmes.","Expression littéraire","Des torrents de lumière inondaient la salle.","Honoré de Balzac"],
+    ["L'Euphémisme","Les personnes du troisième âge. (= les vieux)","Langue courante","Les non-voyants. (= les aveugles)","Langue administrative"],
+    ["La Litote","Va, je ne te hais point. (= je t'aime)","Corneille, Le Cid","Ce n'est pas mal. (= c'est très bien)","Expression courante"],
+    ["L'Onomatopée","Cocorico ! cria le coq.","Fable classique","Le hibou chantait : hou, hou, hou.","Conte populaire"],
+    ["L'Allitération","Pour qui sont ces serpents qui sifflent sur vos têtes ? (son [s])","Racine, Andromaque","Les sanglots longs / Des violons / De l'automne. (son [on] = assonance)","Paul Verlaine"],
+  ];
+  const catOf={
+    "La Comparaison":'comp',"La Métaphore":'comp',"La Personnification":'comp',
+    "L'Antithèse":'oppos',"L'Oxymore":'oppos',"L'Antiphrase":'oppos',
+    "La Gradation":'insist',"Le Parallélisme":'insist',"L'Anaphore":'insist',"L'Hyperbole":'insist',
+    "L'Euphémisme":'attn',"La Litote":'attn',
+    "L'Onomatopée":'diction',"L'Allitération":'diction'
+  };
+  return `<div style='padding:0 6px'>
+  <div style='background:#1a1a2e;color:#fff;border-radius:10px;padding:12px 16px;text-align:center;margin-bottom:10px'>
+    <div style='font-size:1.1em;font-weight:800'>📖 Les Figures de Style</div>
+    <div style='font-size:.8em;opacity:.75;margin-top:3px'>Français · 4ème · Exemples littéraires</div>
+  </div>
+  ${litEx.map(row=>{const cat=FR_CATS[catOf[row[0]]];return `
+  <div style='border-radius:8px;overflow:hidden;margin-bottom:8px;box-shadow:0 2px 6px rgba(0,0,0,.06)'>
+    <div style='background:${cat.c};color:#fff;padding:6px 12px;font-weight:700;font-size:.85em'>${row[0]} <span style='opacity:.7;font-weight:400;font-size:.85em'>${cat.label}</span></div>
+    <div style='background:#fff;padding:8px 10px;display:flex;flex-direction:column;gap:5px'>
+      <div style='border-left:3px solid ${cat.c};padding:4px 8px;background:${cat.l};border-radius:0 4px 4px 0'>
+        <div style='font-style:italic;font-size:.83em;color:#2c3e50'>${row[1]}</div>
+        <div style='font-size:.72em;color:#7f8c8d;margin-top:1px'>— ${row[2]}</div>
+      </div>
+      <div style='border-left:3px solid ${cat.c};padding:4px 8px;background:#fafafa;border-radius:0 4px 4px 0'>
+        <div style='font-style:italic;font-size:.83em;color:#2c3e50'>${row[3]}</div>
+        <div style='font-size:.72em;color:#7f8c8d;margin-top:1px'>— ${row[4]}</div>
+      </div>
+    </div>
+  </div>`}).join('')}
+  </div>`;}
+
+/* ── Quizlet Français ── */
+let frMode='fc',frSerieN=5,frDeck=[],frIdx=0,frSc=0,frTot=0,frFlipped=false,frAnswered=false;
+let frReviewSet=new Set();
+function frSh(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
+function frBuild(){const p=frSh(FR_FIGS);frDeck=frSerieN>0?p.slice(0,frSerieN):p;frIdx=0;frSc=0;frTot=0;frFlipped=false;frAnswered=false;}
+function frBuildReview(){frDeck=frSh(FR_FIGS.filter(f=>frReviewSet.has(f[0])));frIdx=0;frSc=0;frTot=0;frFlipped=false;frAnswered=false;}
+function frRevBadge(){const b=document.getElementById('fr-rev');if(b){b.textContent='⭐ '+frReviewSet.size;b.style.display=frReviewSet.size?'inline':'none';}}
+function frProg(){const el=document.getElementById('fr-prog');if(!el)return;const pct=frDeck.length?(frIdx/frDeck.length)*100:0;el.style.width=pct+'%';el.style.background=frDeck[frIdx]?FR_CATS[frDeck[frIdx][2]].c:'#ccc';}
+function frBadge(){const el=document.getElementById('fr-badge');if(el)el.textContent=frMode==='fc'?(frIdx+1)+'/'+frDeck.length:frSc+'/'+frTot;}
+function frRender(){if(!frDeck.length){frBuild();}const app=document.getElementById('fr-app');if(!app)return;if(!frDeck.length){app.innerHTML='<div style="text-align:center;padding:2rem;color:#999">Aucune carte.</div>';return;}if(frIdx>=frDeck.length){frDone();return;}frProg();frBadge();frMode==='fc'?frFCRender():frQCMRender();}
+function frSetMode(m){frMode=m;const mf=document.getElementById('fr-mf'),mq=document.getElementById('fr-mq');if(mf)mf.style.background=m==='fc'?'#444':'transparent';if(mf)mf.style.color=m==='fc'?'#fff':'#444';if(mq)mq.style.background=m==='qcm'?'#444':'transparent';if(mq)mq.style.color=m==='qcm'?'#fff':'#444';frBuild();frRender();}
+function frSetSerie(n){frSerieN=n;[5,10,20,0].forEach(x=>{const b=document.getElementById('frs-'+x);if(b){b.style.background=frSerieN===x?'#444':'transparent';b.style.color=frSerieN===x?'#fff':'#444';}});frBuild();frRender();}
+function frStartReview(){if(!frReviewSet.size)return;frBuildReview();frRender();}
+function frFCRender(){const f=frDeck[frIdx];const cat=FR_CATS[f[2]];const isRev=frReviewSet.has(f[0]);const app=document.getElementById('fr-app');
+  app.innerHTML=`<div onclick='frFlip()' style='background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.12);padding:1.5rem;text-align:center;cursor:pointer;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:8px'>
+  <div id='fr-front'><div style='font-size:.75rem;font-weight:700;color:${cat.c};text-transform:uppercase;margin-bottom:6px'>${cat.label}</div><div style='font-size:1rem;font-weight:600;font-style:italic;color:#2c3e50;line-height:1.5'>${f[4]}</div><div style='font-size:.72rem;color:#bbb;margin-top:8px'>Touche pour voir la figure ↩</div></div>
+  <div id='fr-back' style='display:none'><div style='font-size:.75rem;font-weight:700;color:${cat.c};text-transform:uppercase;margin-bottom:4px'>${cat.label}</div><div style='font-size:1.4rem;font-weight:800;color:${cat.c}'>${f[1]}</div><div style='font-size:.8rem;color:#555;margin-top:5px;line-height:1.4'>${f[3]}</div></div>
+  </div>
+  <div style='display:flex;gap:8px;justify-content:center;flex-wrap:wrap;align-items:center'>
+    <button onclick='frPrev()' style='padding:.5rem 1rem;border-radius:14px;border:2px solid #444;background:transparent;cursor:pointer;font-weight:600' ${frIdx===0?'disabled':''}>← Préc.</button>
+    <button onclick='frMarkRev()' title='Marquer à revoir' style='padding:.4rem .8rem;border-radius:12px;border:2px solid ${isRev?"#f39c12":"#ddd"};background:${isRev?"#f39c12":"transparent"};color:${isRev?"#fff":"#bbb"};cursor:pointer'>⭐</button>
+    <span style='font-size:.85rem;color:#777;font-weight:600'>${frIdx+1} / ${frDeck.length}</span>
+    <button onclick='frNext()' style='padding:.5rem 1rem;border-radius:14px;border:none;background:#444;color:#fff;cursor:pointer;font-weight:600'>Suiv. →</button>
+  </div>
+  ${frReviewSet.size>0?`<div style='text-align:center;margin-top:8px'><button onclick='frStartReview()' style='padding:.4rem 1rem;border-radius:14px;border:none;background:#f39c12;color:#fff;cursor:pointer;font-weight:700;font-size:.82rem'>🔁 Réviser les erreurs (${frReviewSet.size})</button></div>`:''}
+`;}
+function frFlip(){const fr=document.getElementById('fr-front'),bk=document.getElementById('fr-back');if(fr&&bk){fr.style.display='none';bk.style.display='flex';bk.style.flexDirection='column';bk.style.alignItems='center';}}
+function frPrev(){if(frIdx>0){frIdx--;frFlipped=false;frRender();}}
+function frNext(){if(frIdx<frDeck.length-1){frIdx++;frFlipped=false;frRender();}else frDone();}
+function frMarkRev(){const id=frDeck[frIdx][0];if(frReviewSet.has(id))frReviewSet.delete(id);else frReviewSet.add(id);frRevBadge();frRender();}
+function frQCMRender(){const f=frDeck[frIdx];const cat=FR_CATS[f[2]];const wrong=frSh(FR_FIGS.filter(x=>x[0]!==f[0])).slice(0,3).map(x=>x[1]);const choices=frSh([f[1],...wrong]);frAnswered=false;const app=document.getElementById('fr-app');
+  app.innerHTML=`<div style='background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:1rem;text-align:center;margin-bottom:8px'>
+  <div style='font-size:.72rem;font-weight:700;color:${cat.c};text-transform:uppercase;margin-bottom:4px'>${cat.label}</div>
+  <div style='font-size:.95rem;font-weight:600;font-style:italic;color:#2c3e50;line-height:1.5'>${f[4]}</div>
+  </div>
+  <div style='display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px'>
+    ${choices.map(c=>`<button onclick='frAns("${c.replace(/"/g,"&quot;").replace(/'/g,"\\'")}","${f[1].replace(/"/g,"&quot;").replace(/'/g,"\\'")}",this)' style='padding:.75rem;border-radius:8px;border:2px solid #ddd;background:#fff;font-size:.85rem;font-weight:700;cursor:pointer'>${c}</button>`).join('')}
+  </div>
+  <div id='fr-fb' style='text-align:center;min-height:26px;font-weight:700;font-size:.88rem'></div>
+  <div style='display:flex;justify-content:center;gap:8px;margin-top:6px;flex-wrap:wrap'>
+    <button id='fr-nxt' onclick='frQNext()' disabled style='padding:.5rem 1.2rem;border-radius:14px;border:none;background:#444;color:#fff;cursor:pointer;font-weight:600;opacity:.4'>Suivant →</button>
+  </div>`;}
+function frAns(chosen,ans,btn){if(frAnswered)return;frAnswered=true;frTot++;const ok=chosen===ans;if(ok)frSc++;else{frReviewSet.add(frDeck[frIdx][0]);frRevBadge();}
+  document.querySelectorAll('#fr-app button').forEach(b=>{b.disabled=true;if(b.textContent===ans){b.style.background='#d5f5e3';b.style.borderColor='#27ae60';b.style.color='#27ae60';}else if(b===btn&&!ok){b.style.background='#fadbd8';b.style.borderColor='#c0392b';b.style.color='#c0392b';}});
+  const fb=document.getElementById('fr-fb');if(fb)fb.innerHTML=ok?'<span style="color:#27ae60">✅ Bravo !</span>':`<span style="color:#c0392b">❌ C'était : <b>${ans}</b></span>`;
+  const nb=document.getElementById('fr-nxt');if(nb){nb.disabled=false;nb.style.opacity='1';}frBadge();}
+function frQNext(){if(frIdx<frDeck.length-1){frIdx++;frRender();}else frDone();}
+function frDone(){const pct=frTot?Math.round(frSc/frTot*100):0;const app=document.getElementById('fr-app');if(!app)return;
+  app.innerHTML=`<div style='background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.12);padding:2rem;text-align:center'>
+  <div style='font-size:2.5rem'>${pct>=80?'🌟':pct>=60?'👍':'💪'}</div>
+  <div style='font-size:1.2rem;font-weight:700;margin:.4rem 0'>Terminé !</div>
+  <div style='font-size:2rem;font-weight:800;color:${pct>=60?'#27ae60':'#c0392b'}'>${frMode==='fc'?frDeck.length+' vues':frSc+'/'+frTot}</div>
+  ${frMode==='qcm'?`<div style='color:#777;margin:.3rem 0'>${pct}% de bonnes réponses</div>`:''}
+  <div style='display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap'>
+    <button onclick='frBuild();frRender()' style='padding:.5rem 1.2rem;border-radius:14px;border:none;background:#444;color:#fff;cursor:pointer;font-weight:600'>🔄 Nouvelle série</button>
+    ${frReviewSet.size>0?`<button onclick='frStartReview()' style='padding:.5rem 1.2rem;border-radius:14px;border:none;background:#f39c12;color:#fff;cursor:pointer;font-weight:600'>🔁 Réviser les erreurs (${frReviewSet.size})</button>`:''}
+  </div></div>`;}
+function rFiguresQuizlet(){
+  frBuild();
+  const serieBtns=[5,10,20,0].map(n=>`<button id='frs-${n}' onclick='frSetSerie(${n})' style='padding:.25rem .7rem;border-radius:10px;border:2px solid #444;background:${frSerieN===n?'#444':'transparent'};color:${frSerieN===n?'#fff':'#444'};font-size:.78rem;font-weight:600;cursor:pointer'>${n||'Tout'}</button>`).join('');
+  return `<div style='padding:0 6px'>
+  <div style='background:#1a1a2e;color:#fff;border-radius:10px;padding:.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem'>
+    <span style='font-weight:700'>📚 Figures de Style</span>
+    <span id='fr-badge' style='background:#F9E79F;color:#7D6608;font-weight:700;border-radius:12px;padding:.2rem .7rem;font-size:.85rem'>0/0</span>
+    <span id='fr-rev' onclick='frStartReview()' style='background:#f39c12;color:#fff;font-weight:700;border-radius:12px;padding:.2rem .7rem;font-size:.85rem;cursor:pointer;display:none'>⭐ 0</span>
+  </div>
+  <div style='display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.5rem .8rem;margin-bottom:.5rem'>
+    <button id='fr-mf' onclick='frSetMode("fc")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #444;background:#444;color:#fff;font-size:.82rem;font-weight:600;cursor:pointer'>🃏 Flashcards</button>
+    <button id='fr-mq' onclick='frSetMode("qcm")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #444;background:transparent;color:#444;font-size:.82rem;font-weight:600;cursor:pointer'>🎯 QCM</button>
+  </div>
+  <div style='display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.4rem .8rem;margin-bottom:.5rem'>
+    <span style='font-size:.78rem;color:#999;font-weight:700'>Série :</span>${serieBtns}
+  </div>
+  <div style='height:5px;background:#eee;border-radius:3px;margin-bottom:.5rem;overflow:hidden'><div id='fr-prog' style='height:100%;border-radius:3px;width:0%;transition:.3s'></div></div>
+  <div id='fr-app'></div></div>`;}
+
 /* ══ RENDERERS MAP ══ */
 const RND={
   'anglais/fiches/verbes-irreguliers_fiche':{fn:rFiche,title:'Verbes Irréguliers',sub:'Fiche · Anglais'},
@@ -613,6 +794,9 @@ const RND={
   'espagnol/fiches/verbes-irreguliers-present_fiche':{fn:rFicheEsp,title:'Verbes Irréguliers — Présent',sub:'Fiche · Espagnol'},
   'espagnol/fiches/conjugaisons_fiche':{fn:rConjFiche,title:'Conjugaisons — Tous les temps',sub:'Fiche · Espagnol'},
   'espagnol/exercices/conjugaisons_quizlet':{fn:rConjQuizlet,title:'Conjugaisons',sub:'Quizlet · Espagnol'},
+  'francais/fiches/figures-de-style_fiche':{fn:rFiguresFiche,title:'Figures de Style — Cours',sub:'Fiche · Français'},
+  'francais/fiches/figures-de-style-exemples-litteraires_fiche':{fn:rFiguresExFiche,title:'Figures de Style — Exemples littéraires',sub:'Fiche · Français'},
+  'francais/exercices/figures-de-style_quizlet':{fn:rFiguresQuizlet,title:'Figures de Style',sub:'Quizlet · Français'},
   'utilitaire/fiches/prompt-global_ia-juliette':{fn:rPrompt,title:'Prompt global Ia Juliette',sub:'Guide · Utilitaire'}
 };
 
@@ -654,7 +838,8 @@ function openDoc(mid,sf,did){
   document.getElementById('dv').innerHTML=r.fn();
   show('doc');window.scrollTo(0,0);
   if(did.includes('quizlet')&&did!=='conjugaisons_quizlet'){const _s=sh(VERBS);qDk=qSerieN>0?_s.slice(0,qSerieN):_s;fDk=[...qDk];qI=0;qSc=0;qTot=0;fI=0;fFl=false;}
-  if(did==='conjugaisons_quizlet'){cqRender();}}
+  if(did==='conjugaisons_quizlet'){cqRender();}
+  if(did==='figures-de-style_quizlet'){frRender();}}
 
 function goBack(){
   stack.pop();
