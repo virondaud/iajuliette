@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ia Juliette">
+<meta name="theme-color" content="#1a1a3e">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<title>Ia Juliette</title>
+<style>
+:root{--bg:#f0f2ff;--card:#fff;--text:#1a1a3e;--muted:#888;--radius:14px;--safe-b:env(safe-area-inset-bottom,0px);--hh:58px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* HEADER */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:200;
+  background:linear-gradient(135deg,#1a1a3e,#2a2a6e);
+  display:flex;align-items:center;gap:10px;
+  padding:env(safe-area-inset-top,0) 16px 0;
+  height:calc(var(--hh) + env(safe-area-inset-top,0));
+  box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.hdr-back{color:rgba(255,255,255,.75);font-size:1.5em;cursor:pointer;padding:8px 4px;display:none;line-height:1;background:none;border:none}
+.hdr-back.on{display:block}
+.hdr-titles{flex:1;overflow:hidden}
+.hdr-title{color:#fff;font-size:1.05em;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-sub{color:rgba(255,255,255,.55);font-size:.72em}
+.hdr-btn{width:34px;height:34px;border:none;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:1em;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+
+/* MAIN */
+main{padding-top:calc(var(--hh) + env(safe-area-inset-top,0) + 12px);padding-bottom:calc(24px + var(--safe-b));min-height:100vh}
+
+/* VIEWS */
+.view{display:none}
+.view.on{display:block;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* SEARCH */
+.srch-wrap{padding:0 16px 10px;display:none}
+.srch-wrap.on{display:block}
+.srch-inp{width:100%;padding:11px 16px 11px 40px;border:none;border-radius:12px;background:#fff;font-size:.95em;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.07);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center;-webkit-appearance:none}
+.srch-inp:focus{outline:none;box-shadow:0 0 0 2px #2980b9}
+
+/* PILLS */
+.pills{display:flex;gap:8px;padding:0 16px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.pills::-webkit-scrollbar{display:none}
+.pill{flex-shrink:0;background:#fff;border-radius:20px;padding:5px 14px;font-size:.78em;font-weight:600;color:#2980b9;box-shadow:0 1px 4px rgba(0,0,0,.07);white-space:nowrap}
+
+/* GRID MATIERES */
+.grid{padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mc{background:var(--card);border-radius:var(--radius);padding:16px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.07);display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;transition:transform .15s}
+.mc:active{transform:scale(.95)}
+.mc-em{font-size:2em}
+.mc-nm{font-size:.88em;font-weight:700;line-height:1.2}
+.mc-ct{font-size:.7em;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:2px}
+.mc.dim{opacity:.5}
+
+/* DOC LIST */
+.dl{padding:0 16px}
+.sf{margin-bottom:18px}
+.sf-lbl{font-size:.7em;text-transform:uppercase;letter-spacing:.8px;color:#bbb;font-weight:700;margin-bottom:8px;padding-left:2px}
+.di{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--card);border-radius:12px;margin-bottom:8px;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.06);min-height:52px}
+.di:active{background:#eef0ff}
+.di-ic{font-size:1.2em;flex-shrink:0}
+.di-inf{flex:1}
+.di-nm{font-size:.9em;font-weight:600}
+.di-tp{font-size:.7em;font-weight:700;padding:2px 8px;border-radius:6px;margin-top:3px;display:inline-block}
+.tp-fi{background:#eaf4fb;color:#2980b9}
+.tp-ex{background:#eafaf1;color:#27ae60}
+.tp-co{background:#fef5e7;color:#e67e22}
+.di-ar{color:#ddd;font-size:.9em}
+.sf-empty{font-size:.82em;color:#ccc;font-style:italic;padding:2px}
+
+/* DOC VIEW */
+.dv{padding-bottom:24px}
+
+/* Fiche verbes */
+.fg{margin:0 16px 20px;border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.fgh{padding:12px 14px}
+.fgt{color:#fff;font-weight:700;font-size:.95em}
+.fgd{color:rgba(255,255,255,.8);font-size:.75em;margin-top:2px}
+.ftb{width:100%;border-collapse:collapse;background:#fff;font-size:.82em}
+.ftb thead th{padding:7px 5px;color:#666;background:#f4f4f4;text-align:center;border-bottom:1px solid #e8e8e8;font-size:.88em}
+.ftb tbody td{padding:7px 5px;text-align:center;border-bottom:1px solid #f0f0f0}
+.ftb tbody tr:last-child td{border-bottom:none}
+.td-i{font-weight:700}
+.flg{text-align:center;font-size:.75em;color:#aaa;padding:10px 16px 4px}
+
+/* Quizlet */
+.ql-tabs{display:flex;gap:8px;padding:0 16px 14px;overflow-x:auto}
+.ql-tabs::-webkit-scrollbar{display:none}
+.ql-tab{flex-shrink:0;padding:7px 16px;border:2px solid #1a3c6e;border-radius:20px;background:#fff;color:#1a3c6e;font-size:.85em;cursor:pointer;font-weight:600}
+.ql-tab.on{background:#1a3c6e;color:#fff}
+.ql-pnl{display:none;padding:0 16px}
+.ql-pnl.on{display:block}
+/* flashcard */
+.fc-ctr{text-align:center;color:#888;font-size:.82em;margin-bottom:10px}
+.fc-sc{width:100%;height:170px;perspective:900px;cursor:pointer;margin-bottom:14px}
+.fc-in{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.fc-sc.fl .fc-in{transform:rotateY(180deg)}
+.fc-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center}
+.fc-fr{background:linear-gradient(135deg,#1a3c6e,#2a5298);color:#fff;box-shadow:0 4px 14px rgba(26,60,110,.3)}
+.fc-bk{background:#fff;border:2px solid #1a3c6e;transform:rotateY(180deg);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.fc-lbl{font-size:.7em;text-transform:uppercase;letter-spacing:1px;opacity:.7;margin-bottom:6px}
+.fc-wd{font-size:1.7em;font-weight:700}
+.fc-ht{font-size:.75em;opacity:.6;margin-top:6px}
+.fc-bk .fc-wd{color:#1a3c6e;font-size:1.3em}
+.fc-tr{color:#999;font-size:.88em;margin-top:4px}
+.fc-nav{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px}
+.fcb{padding:9px 20px;background:#1a3c6e;color:#fff;border:none;border-radius:10px;font-size:.9em;cursor:pointer;font-weight:600}
+.fcb:disabled{background:#ddd;color:#aaa}
+.fcb.sh{background:#fff;color:#1a3c6e;border:2px solid #1a3c6e}
+.fc-pg{height:5px;background:#e0e4f0;border-radius:3px;overflow:hidden;margin-bottom:6px}
+.fc-pgb{height:100%;background:#1a3c6e;transition:width .3s}
+.fc-tip{text-align:center;color:#bbb;font-size:.75em}
+/* qcm */
+.qsc{text-align:center;color:#1a3c6e;font-size:.88em;font-weight:700;margin-bottom:12px}
+.qq{background:#fff;border-radius:var(--radius);padding:18px;margin-bottom:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.qql{font-size:.7em;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.qqw{font-size:1.7em;font-weight:700;color:#1a3c6e}
+.qqt{font-size:.82em;color:#bbb;margin-top:3px}
+.qch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.qcb{padding:13px 8px;background:#fff;border:2px solid #e8eaf0;border-radius:12px;font-size:.9em;cursor:pointer;font-weight:600;color:#333;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.qcb:active:not(.dis){background:#eef0ff;border-color:#1a3c6e}
+.qcb.ok{background:#d4edda;border-color:#28a745;color:#155724}
+.qcb.ko{background:#f8d7da;border-color:#dc3545;color:#721c24}
+.qcb.dis{cursor:default}
+.qfb{text-align:center;min-height:24px;font-size:.9em;font-weight:600;margin-bottom:10px}
+.qnx{display:block;width:100%;padding:12px;background:#1a3c6e;color:#fff;border:none;border-radius:12px;font-size:.95em;cursor:pointer;font-weight:600}
+.qnx:disabled{background:#ddd;color:#aaa}
+/* liste */
+.ls-s{width:100%;padding:10px 14px;border:2px solid #e0e4f0;border-radius:10px;font-size:.9em;margin-bottom:10px;-webkit-appearance:none}
+.ls-s:focus{outline:none;border-color:#1a3c6e}
+.lst{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07);font-size:.82em}
+.lst thead{background:#1a3c6e;color:#fff}
+.lst th{padding:9px 6px;text-align:center;font-size:.85em}
+.lst td{padding:7px 6px;text-align:center;border-bottom:1px solid #f0f0f8}
+.lst tr:last-child td{border-bottom:none}
+.lst tr:nth-child(even) td{background:#f8f9ff}
+.lst td:first-child{font-weight:700;color:#1a3c6e}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <button class="hdr-back" id="hdr-back" onclick="goBack()">‹</button>
+  <div class="hdr-titles">
+    <div class="hdr-title" id="hdr-title">📚 Ia Juliette</div>
+    <div class="hdr-sub" id="hdr-sub">4ème</div>
+  </div>
+  <button class="hdr-btn" onclick="toggleSearch()">🔍</button>
+</div>
+
+<main>
+
+<!-- HOME -->
+<div class="view on" id="v-home">
+  <div class="srch-wrap" id="srch-wrap">
+    <input class="srch-inp" id="srch-inp" type="search" placeholder="Rechercher une matière…" oninput="filterMat(this.value)" autocorrect="off" autocapitalize="off">
+  </div>
+  <div class="pills" id="pills"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- MATIERE -->
+<div class="view" id="v-mat">
+  <div class="dl" id="dl"></div>
+</div>
+
+<!-- DOC -->
+<div class="view" id="v-doc">
+  <div class="dv" id="dv"></div>
+</div>
+
+</main>
+
+<script>
+/* ══════════════════════════════════════════
+   DONNÉES — à mettre à jour à chaque ajout
+══════════════════════════════════════════ */
+/* SPA_DATA_START */
+const MATS=[
+  {id:"anglais",name:"Anglais",emoji:"🇬🇧",color:"#2980b9",bb:"#eaf4fb",bt:"#2980b9",
+   docs:{
+     fiches:[{id:"verbes-irreguliers_fiche",name:"Verbes Irréguliers",lbl:"Fiche",ic:"📋"}],
+     exercices:[{id:"verbes-irreguliers_quizlet",name:"Verbes Irréguliers",lbl:"Quizlet",ic:"✏️"}],
+     corrections:[]}},
+  {id:"francais",name:"Français",emoji:"📖",color:"#e74c3c",bb:"#fde8e8",bt:"#e74c3c",docs:{fiches:[],exercices:[],corrections:[]}},
+  {id:"maths",name:"Mathématiques",emoji:"🔢",color:"#9b59b6",bb:"#f5eef8",bt:"#9b59b6",docs:{fiches:[],exercices:[],corrections:[]}},
+  {id:"histgeo",name:"Histoire-Géo",emoji:"🌍",color:"#e67e22",bb:"#fef5e7",bt:"#e67e22",docs:{fiches:[],exercices:[],corrections:[]}},
+  {id:"svt",name:"SVT",emoji:"🌿",color:"#27ae60",bb:"#eafaf1",bt:"#27ae60",docs:{fiches:[],exercices:[],corrections:[]}},
+  {id:"pc",name:"Physique-Chimie",emoji:"⚗️",color:"#16a085",bb:"#e8f8f5",bt:"#16a085",docs:{fiches:[],exercices:[],corrections:[]}},
+  {id:"espagnol",name:"Espagnol",emoji:"🇪🇸",color:"#f39c12",bb:"#fef9e7",bt:"#d68910",docs:{fiches:[{id:"verbes-irreguliers-present_fiche",name:"Verbes Irréguliers — Présent",lbl:"Fiche",ic:"📋"},{id:"conjugaisons_fiche",name:"Conjugaisons — Tous les temps",lbl:"Fiche",ic:"📚"}],exercices:[{id:"conjugaisons_quizlet",name:"Conjugaisons",lbl:"Quizlet",ic:"🎯"}],corrections:[]}},
+  {id:"techno",name:"Technologie",emoji:"⚙️",color:"#2c3e50",bb:"#eaecee",bt:"#2c3e50",docs:{fiches:[],exercices:[],corrections:[]}},
+  {id:"arts",name:"Arts Plastiques",emoji:"🎨",color:"#8e44ad",bb:"#f5eef8",bt:"#8e44ad",docs:{fiches:[],exercices:[],corrections:[]}},
+  {id:"musique",name:"Éducation Musicale",emoji:"🎵",color:"#d35400",bb:"#fdf0e8",bt:"#d35400",docs:{fiches:[],exercices:[],corrections:[]}},
+  {id:"emc",name:"EMC",emoji:"🏛️",color:"#7f8c8d",bb:"#f2f3f4",bt:"#7f8c8d",docs:{fiches:[],exercices:[],corrections:[]}},
+  {id:"utilitaire",name:"Utilitaire",emoji:"🔧",color:"#555566",bb:"#f0f0f4",bt:"#555566",docs:{fiches:[{id:"prompt-global_ia-juliette",name:"Prompt global Ia Juliette",lbl:"Guide",ic:"📋"}],exercices:[],corrections:[]}}
+];
+/* SPA_DATA_END */
+
+/* ══ DONNÉES DOCUMENTS ══ */
+const GA=[["cut","cut","cut","couper"],["hit","hit","hit","frapper"],["let","let","let","laisser"],["put","put","put","mettre"],["read","read","read","lire"]];
+const GB=[["bring","brought","brought","apporter"],["build","built","built","construire"],["buy","bought","bought","acheter"],["catch","caught","caught","attraper"],["feel","felt","felt","ressentir"],["fight","fought","fought","se battre"],["find","found","found","trouver"],["get","got","got/gotten","obtenir"],["have","had","had","avoir"],["hear","heard","heard","entendre"],["hold","held","held","tenir"],["keep","kept","kept","garder"],["learn","learnt","learnt","apprendre"],["leave","left","left","quitter"],["lose","lost","lost","perdre"],["make","made","made","faire"],["mean","meant","meant","signifier"],["meet","met","met","rencontrer"],["pay","paid","paid","payer"],["say","said","said","dire"],["sell","sold","sold","vendre"],["send","sent","sent","envoyer"],["sit","sat","sat","s'asseoir"],["sleep","slept","slept","dormir"],["spend","spent","spent","dépenser"],["stand","stood","stood","se lever"],["teach","taught","taught","enseigner"],["tell","told","told","raconter"],["think","thought","thought","penser"],["understand","understood","understood","comprendre"],["win","won","won","gagner"]];
+const GC=[["be","was/were","been","être"],["become","became","become","devenir"],["begin","began","begun","commencer"],["break","broke","broken","casser"],["choose","chose","chosen","choisir"],["come","came","come","venir"],["do","did","done","faire"],["draw","drew","drawn","dessiner"],["drink","drank","drunk","boire"],["drive","drove","driven","conduire"],["eat","ate","eaten","manger"],["fall","fell","fallen","tomber"],["fly","flew","flown","voler"],["forget","forgot","forgotten","oublier"],["give","gave","given","donner"],["go","went","gone","aller"],["grow","grew","grown","grandir"],["hide","hid","hidden","cacher"],["know","knew","known","savoir"],["ride","rode","ridden","monter à vélo"],["run","ran","run","courir"],["see","saw","seen","voir"],["show","showed","shown","montrer"],["sing","sang","sung","chanter"],["speak","spoke","spoken","parler"],["swim","swam","swum","nager"],["take","took","taken","prendre"],["throw","threw","thrown","lancer"],["wake","woke","woken","se réveiller"],["wear","wore","worn","porter"],["write","wrote","written","écrire"]];
+const VERBS=[...GA,...GB,...GC];
+
+/* ══ RENDERERS ══ */
+function rFiche(){
+  function rows(d,c){return d.map((v,i)=>`<tr${i%2?" style='background:#f9faff'":""}>
+    <td class="td-i" style="color:${c}">${v[0]}</td><td>${v[1]}</td><td>${v[2]}</td>
+    <td style="color:#888">${v[3]}</td></tr>`).join('')}
+  return `
+  <div class="fg"><div class="fgh" style="background:#27ae60">
+    <div class="fgt">🟢 Groupe A — 3 formes identiques</div>
+    <div class="fgd">1 seule forme à retenir !</div></div>
+    <table class="ftb"><thead><tr><th>Infinitif</th><th>Prétérit</th><th>PP</th><th>🇫🇷</th></tr></thead>
+    <tbody>${rows(GA,'#27ae60')}</tbody></table></div>
+  <div class="fg"><div class="fgh" style="background:#2980b9">
+    <div class="fgt">🔵 Groupe B — Prétérit = PP</div>
+    <div class="fgd">2 formes à retenir</div></div>
+    <table class="ftb"><thead><tr><th>Infinitif</th><th>Prétérit</th><th>PP</th><th>🇫🇷</th></tr></thead>
+    <tbody>${rows(GB,'#2980b9')}</tbody></table></div>
+  <div class="fg"><div class="fgh" style="background:#e67e22">
+    <div class="fgt">🟡 Groupe C — 3 formes différentes</div>
+    <div class="fgd">Le plus difficile !</div></div>
+    <table class="ftb"><thead><tr><th>Infinitif</th><th>Prétérit</th><th>PP</th><th>🇫🇷</th></tr></thead>
+    <tbody>${rows(GC,'#e67e22')}</tbody></table></div>
+  <p class="flg">🟢 Facile · 🔵 Moyen · 🟡 Difficile</p>`;}
+
+/* ── Quizlet state ── */
+let fDk=[...VERBS],fI=0,fFl=false;
+let qSc=0,qTot=0,qI=0,qDk=[...VERBS];
+function sh(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]]}return b}
+
+function rQuizlet(){
+  return `<div class="ql-tabs">
+    <button class="ql-tab on" onclick="qTab('fc',this)">🃏 Flashcards</button>
+    <button class="ql-tab" onclick="qTab('qcm',this)">✏️ QCM</button>
+    <button class="ql-tab" onclick="qTab('lst',this)">📋 Liste</button>
+  </div>
+  <div class="ql-pnl on" id="pfc">${rFC()}</div>
+  <div class="ql-pnl" id="pqcm">${rQCM()}</div>
+  <div class="ql-pnl" id="plst">${rLst()}</div>`;}
+
+function rFC(){
+  const v=fDk[fI];
+  return `<div class="fc-ctr">Carte ${fI+1} / ${fDk.length}</div>
+  <div class="fc-sc${fFl?' fl':''}" id="fcs" onclick="fcFlip()">
+    <div class="fc-in"><div class="fc-face fc-fr">
+      <div class="fc-lbl">Infinitif</div><div class="fc-wd">${v[0]}</div>
+      <div class="fc-ht">Touche pour voir</div></div>
+    <div class="fc-face fc-bk">
+      <div class="fc-lbl">Réponse</div>
+      <div class="fc-wd">${v[1]} — ${v[2]}</div>
+      <div class="fc-tr">${v[3]}</div></div></div></div>
+  <div class="fc-nav">
+    <button class="fcb" onclick="fcN(-1)"${fI===0?' disabled':''}>← Préc.</button>
+    <button class="fcb sh" onclick="fcSh()">🔀</button>
+    <button class="fcb" onclick="fcN(1)"${fI===fDk.length-1?' disabled':''}>Suiv. →</button>
+  </div>
+  <div class="fc-pg"><div class="fc-pgb" style="width:${(fI+1)/fDk.length*100}%"></div></div>
+  <div class="fc-tip">Touche la carte pour la retourner</div>`;}
+
+function fcFlip(){fFl=!fFl;document.getElementById('fcs').classList.toggle('fl',fFl)}
+function fcN(d){fI=Math.max(0,Math.min(fDk.length-1,fI+d));fFl=false;document.getElementById('pfc').innerHTML=rFC()}
+function fcSh(){fDk=sh(VERBS);fI=0;fFl=false;document.getElementById('pfc').innerHTML=rFC()}
+
+const VVAR={
+  "be":["wased","beed","weresed"],"beat":["beated","bate","beet"],
+  "become":["becomed","becamed","becomes"],"begin":["beginned","beganed","begined"],
+  "break":["breaked","braked","brooked"],"bring":["bringed","brung","broughted"],
+  "build":["builded","builed","buitd"],"buy":["buyed","boughted","buied"],
+  "catch":["catched","cotched","caughted"],"choose":["choosed","chosed","chosen"],
+  "come":["comed","camed","comes"],"cut":["cutted","cuted","cutt"],
+  "do":["doed","dided","ded"],"draw":["drawed","drowed","drawned"],
+  "drink":["drinked","drunk","dronk"],"drive":["drived","droved","draved"],
+  "eat":["eated","ated","eted"],"fall":["falled","feled","felted"],
+  "feel":["feeled","feled","falt"],"fight":["fighted","foughted","faughed"],
+  "find":["finded","foud","finned"],"fly":["flied","flewed","flaw"],
+  "forget":["forgetted","forgotted","forgat"],"get":["getted","goted","gott"],
+  "give":["gived","gaved","giveed"],"go":["goed","wented","wennt"],
+  "grow":["growed","grewed","grown"],"have":["haved","hade","hadd"],
+  "hear":["heared","heered","heareded"],"hide":["hided","hidded","hedd"],
+  "hit":["hitted","hited","hiit"],"hold":["holded","helled","helded"],
+  "keep":["keeped","kepped","keptd"],"know":["knowed","knawn","knewed"],
+  "learn":["leared","lernt","learnd"],"leave":["leaved","lefted","laeft"],
+  "let":["letted","leted","lett"],"lose":["losed","losted","lossed"],
+  "make":["maked","maded","maid"],"mean":["meaned","ment","meanted"],
+  "meet":["meeted","meted","mett"],"pay":["payed","paied","payied"],
+  "put":["putted","puted","putt"],"read":["readed","reed","readd"],
+  "ride":["rided","roded","ridded"],"run":["runned","ranned","rin"],
+  "say":["sayed","saied","saidd"],"see":["seed","sawed","sow"],
+  "sell":["selled","solded","seld"],"send":["sended","sented","sentd"],
+  "show":["shown","shew","showned"],"sing":["singed","sunged","seng"],
+  "sit":["sited","sated","sitd"],"sleep":["sleeped","slepd","slapt"],
+  "speak":["speaked","spoked","spaked"],"spend":["spended","spand","spentd"],
+  "stand":["standed","stod","stooded"],"swim":["swimmed","swum","swimed"],
+  "take":["taked","toked","tookd"],"teach":["teached","taughted","taughed"],
+  "tell":["telled","tolded","tolled"],"think":["thinked","thunk","thoughted"],
+  "throw":["throwed","thrown","threwed"],"understand":["understanded","understooded","understandd"],
+  "wake":["waked","wokened","woked"],"wear":["weared","wored","wore"],
+  "win":["winned","wined","winn"],"write":["writed","wrated","wrotted"]
+};
+function getVVar(inf){return sh(VVAR[inf]||[]).slice(0,3)}
+
+function rQCM(){
+  const v=qDk[qI%qDk.length];
+  const wr=getVVar(v[0]);
+  const ch=sh([v[1],...wr]);
+  return `<div class="qsc" id="qsc">Score : ${qSc} / ${qTot}</div>
+  <div class="qq"><div class="qql">Prétérit de…</div>
+    <div class="qqw">${v[0]}</div><div class="qqt">${v[3]}</div></div>
+  <div class="qch">${ch.map(c=>`<button class="qcb" onclick="qAns(this,'${c.replace(/'/g,"\\'")}','${v[1].replace(/'/g,"\\'")}')">
+    ${c}</button>`).join('')}</div>
+  <div class="qfb" id="qfb"></div>
+  <button class="qnx" id="qnx" onclick="qNext()" disabled>Question suivante →</button>`;}
+
+function qAns(btn,ch,ok){
+  if(!document.getElementById('qnx').disabled)return;
+  qTot++;document.querySelectorAll('.qcb').forEach(b=>b.classList.add('dis'));
+  if(ch===ok){btn.classList.add('ok');qSc++;document.getElementById('qfb').innerHTML='<span style="color:#28a745">✅ Bravo !</span>'}
+  else{btn.classList.add('ko');document.querySelectorAll('.qcb').forEach(b=>{if(b.textContent.trim()===ok)b.classList.add('ok')});
+    document.getElementById('qfb').innerHTML=`<span style="color:#dc3545">❌ ${ok}</span>`}
+  document.getElementById('qsc').textContent=`Score : ${qSc} / ${qTot}`;
+  document.getElementById('qnx').disabled=false;}
+function qNext(){qI++;if(qI>=qDk.length){qDk=sh(VERBS);qI=0}document.getElementById('pqcm').innerHTML=rQCM()}
+
+function rLst(){
+  return `<input class="ls-s" type="search" placeholder="🔍 Rechercher…" oninput="lsF(this.value)" autocorrect="off">
+  <table class="lst"><thead><tr><th>Infinitif</th><th>Prétérit</th><th>PP</th><th>🇫🇷</th></tr></thead>
+  <tbody id="lsbody">${VERBS.map(v=>`<tr><td>${v[0]}</td><td>${v[1]}</td><td>${v[2]}</td><td>${v[3]}</td></tr>`).join('')}</tbody></table>`;}
+function lsF(q){const r=VERBS.filter(v=>!q||v[0].includes(q.toLowerCase())||v[3].toLowerCase().includes(q.toLowerCase()));
+  document.getElementById('lsbody').innerHTML=r.map(v=>`<tr><td>${v[0]}</td><td>${v[1]}</td><td>${v[2]}</td><td>${v[3]}</td></tr>`).join('')}
+
+function qTab(id,btn){
+  document.querySelectorAll('.ql-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.ql-pnl').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');document.getElementById('p'+id).classList.add('on')}
+
+/* ══ FICHE ESPAGNOL ══ */
+function rFicheEsp(){
+  function conj(pairs,col){
+    return pairs.map(([s,f],i)=>`<tr${i%2?" style='background:#fafafa'":""}>
+      <td style="font-weight:700;color:${col};padding:7px 10px">${s}</td>
+      <td style="font-weight:700;font-size:1.05em;text-align:center;padding:7px 10px">${f}</td></tr>`).join('');
+  }
+  const serRows=conj([['yo','soy'],['tú','eres'],['él/ella','es'],['nosotros','somos'],['vosotros','sois'],['ellos/ellas','son']],'#C0392B');
+  const estRows=conj([['yo','estoy'],['tú','estás'],['él/ella','está'],['nosotros','estamos'],['vosotros','estáis'],['ellos/ellas','están']],'#2471A3');
+  const irRows =conj([['yo','voy'],['tú','vas'],['él/ella','va'],['nosotros','vamos'],['vosotros','vais'],['ellos/ellas','van']],'#1D8348');
+  const otros=[['TENER','tengo','tienes','tiene','tenemos','tienen'],['HACER','hago','haces','hace','hacemos','hacen'],['PODER','puedo','puedes','puede','podemos','pueden'],['QUERER','quiero','quieres','quiere','queremos','quieren'],['VENIR','vengo','vienes','viene','venimos','vienen'],['DECIR','digo','dices','dice','decimos','dicen'],['SABER','sé','sabes','sabe','sabemos','saben'],['PONER','pongo','pones','pone','ponemos','ponen']];
+  return `
+  <div style="margin:0 16px 14px">
+    <div style="background:linear-gradient(135deg,#C0392B,#E74C3C);color:white;border-radius:12px 12px 0 0;padding:12px 16px">
+      <div style="font-weight:800;font-size:1.05em">🔴 SER — être (permanent)</div></div>
+    <table style="width:100%;background:white;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07)">
+      <tbody>${serRows}</tbody></table>
+    <div style="background:#FADBD8;border:1px solid #C0392B;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:.85em;color:#C0392B;font-weight:600">
+      Utiliser pour : nationalité · profession · caractère · matière · origine · heure</div>
+  </div>
+  <div style="margin:0 16px 14px">
+    <div style="background:linear-gradient(135deg,#2471A3,#2E86C1);color:white;border-radius:12px 12px 0 0;padding:12px 16px">
+      <div style="font-weight:800;font-size:1.05em">🔵 ESTAR — être (temporaire)</div></div>
+    <table style="width:100%;background:white;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07)">
+      <tbody>${estRows}</tbody></table>
+    <div style="background:#D6EAF8;border:1px solid #2471A3;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:.85em;color:#2471A3;font-weight:600">
+      Utiliser pour : état physique · émotion · localisation · résultat d'une action</div>
+  </div>
+  <div style="margin:0 16px 14px;background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07);border:2px solid #D4AC0D">
+    <div style="background:#FEF9E7;padding:10px 14px;text-align:center;font-weight:800;font-size:.95em;color:#D4AC0D">⚖️ SER vs ESTAR — la distinction clé !</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr">
+      <div style="padding:10px;background:#fff5f5;border-right:1px solid #f0e0e0">
+        <div style="font-weight:800;color:#C0392B;margin-bottom:6px;font-size:.85em">SER 🔴 permanent</div>
+        <div style="font-size:.83em;color:#555;line-height:1.6">Juan <b>es</b> alto.<br>Madrid <b>es</b> en España.<br>Ella <b>es</b> médica.</div>
+      </div>
+      <div style="padding:10px;background:#f5f9ff">
+        <div style="font-weight:800;color:#2471A3;margin-bottom:6px;font-size:.85em">ESTAR 🔵 temporaire</div>
+        <div style="font-size:.83em;color:#555;line-height:1.6">Juan <b>está</b> cansado.<br>El libro <b>está</b> en la mesa.<br>Ella <b>está</b> contenta.</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin:0 16px 14px">
+    <div style="background:linear-gradient(135deg,#1D8348,#27AE60);color:white;border-radius:12px 12px 0 0;padding:12px 16px">
+      <div style="font-weight:800;font-size:1.05em">🟢 IR — aller</div></div>
+    <table style="width:100%;background:white;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07)">
+      <tbody>${irRows}</tbody></table>
+    <div style="background:#D5F5E3;border:1px solid #1D8348;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:.85em;color:#1D8348;font-weight:600">
+      💡 IR + a + infinitif = futur proche : <b>Voy a estudiar.</b></div>
+  </div>
+  <div style="margin:0 16px 14px;background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07)">
+    <div style="background:#7D3C98;color:white;padding:12px 16px;font-weight:800;font-size:1.05em">🟣 Autres verbes essentiels</div>
+    <div style="overflow-x:auto">
+    <table style="width:100%;font-size:.82em;border-collapse:collapse">
+      <thead style="background:#7D3C98;color:white"><tr>
+        <th style="padding:7px 8px;text-align:left">Verbe</th>
+        <th style="padding:7px 8px;background:#9B59B6">yo</th>
+        <th style="padding:7px 8px">tú</th><th style="padding:7px 8px">él</th>
+        <th style="padding:7px 8px">nosotros</th><th style="padding:7px 8px">ellos</th>
+      </tr></thead>
+      <tbody>${otros.map(([v,...c],i)=>`<tr style="${i%2?'background:#fafafa':''}">
+        <td style="font-weight:700;color:#7D3C98;padding:6px 8px">${v}</td>
+        <td style="font-weight:800;color:#7D3C98;background:#E8DAEF;padding:6px 8px;text-align:center">${c[0]}</td>
+        ${c.slice(1).map(x=>`<td style="padding:6px 8px;text-align:center">${x}</td>`).join('')}
+      </tr>`).join('')}</tbody>
+    </table></div>
+    <div style="background:#E8DAEF;border-top:1px solid #D7BDE2;padding:10px 14px;font-size:.85em;color:#7D3C98;font-weight:600">
+      💡 La colonne YO (violet) est souvent la plus irrégulière — mémorisez-la en priorité !</div>
+  </div>`;}
+
+/* ══ CONJUGAISONS FICHE ══ */
+const CPRN=["yo","tú","él/ella","nosotros","vosotros","ellos/as"];
+const CTC={pres:{c:'#C0392B',l:'#FADBD8',label:'Présent'},imp:{c:'#1A5276',l:'#D6EAF8',label:'Imparfait'},fut:{c:'#1D8348',l:'#D5F5E3',label:'Futur'},cond:{c:'#B7770D',l:'#FEF3C7',label:'Conditionnel'},subj:{c:'#6C3483',l:'#E8DAEF',label:'Subjonctif'}};
+const CDATA={
+ pres_reg:[{lb:"-AR (hablar)",f:["hablo","hablas","habla","hablamos","habláis","hablan"]},{lb:"-ER (comer)",f:["como","comes","come","comemos","coméis","comen"]},{lb:"-IR (vivir)",f:["vivo","vives","vive","vivimos","vivís","viven"]}],
+ pres_sei:[{lb:"SER",f:["soy","eres","es","somos","sois","son"]},{lb:"ESTAR",f:["estoy","estás","está","estamos","estáis","están"]},{lb:"IR",f:["voy","vas","va","vamos","vais","van"]}],
+ pres_ot:[{lb:"TENER",f:["tengo","tienes","tiene","tenemos","tenéis","tienen"]},{lb:"HACER",f:["hago","haces","hace","hacemos","hacéis","hacen"]},{lb:"PODER",f:["puedo","puedes","puede","podemos","podéis","pueden"]},{lb:"QUERER",f:["quiero","quieres","quiere","queremos","queréis","quieren"]},{lb:"VENIR",f:["vengo","vienes","viene","venimos","venís","vienen"]},{lb:"DECIR",f:["digo","dices","dice","decimos","decís","dicen"]},{lb:"SABER",f:["sé","sabes","sabe","sabemos","sabéis","saben"]},{lb:"PONER",f:["pongo","pones","pone","ponemos","ponéis","ponen"]}],
+ imp_reg:[{lb:"-AR (hablar)",f:["hablaba","hablabas","hablaba","hablábamos","hablabais","hablaban"]},{lb:"-ER (comer)",f:["comía","comías","comía","comíamos","comíais","comían"]},{lb:"-IR (vivir)",f:["vivía","vivías","vivía","vivíamos","vivíais","vivían"]}],
+ imp_irr:[{lb:"SER",f:["era","eras","era","éramos","erais","eran"]},{lb:"IR",f:["iba","ibas","iba","íbamos","ibais","iban"]},{lb:"VER",f:["veía","veías","veía","veíamos","veíais","veían"]}],
+ imp_ot:[{lb:"ESTAR",f:["estaba","estabas","estaba","estábamos","estabais","estaban"]},{lb:"TENER",f:["tenía","tenías","tenía","teníamos","teníais","tenían"]},{lb:"HACER",f:["hacía","hacías","hacía","hacíamos","hacíais","hacían"]},{lb:"PODER",f:["podía","podías","podía","podíamos","podíais","podían"]},{lb:"QUERER",f:["quería","querías","quería","queríamos","queríais","querían"]},{lb:"VENIR",f:["venía","venías","venía","veníamos","veníais","venían"]},{lb:"DECIR",f:["decía","decías","decía","decíamos","decíais","decían"]},{lb:"SABER",f:["sabía","sabías","sabía","sabíamos","sabíais","sabían"]},{lb:"PONER",f:["ponía","ponías","ponía","poníamos","poníais","ponían"]}],
+ fut_reg:[{lb:"hablar",f:["hablaré","hablarás","hablará","hablaremos","hablaréis","hablarán"]},{lb:"comer",f:["comeré","comerás","comerá","comeremos","comeréis","comerán"]},{lb:"vivir",f:["viviré","vivirás","vivirá","viviremos","viviréis","vivirán"]}],
+ fut_irr:[["TENER","tendr-","tendré","tendrás","tendrá"],["HACER","har-","haré","harás","hará"],["PODER","podr-","podré","podrás","podrá"],["QUERER","querr-","querré","querrás","querrá"],["VENIR","vendr-","vendré","vendrás","vendrá"],["DECIR","dir-","diré","dirás","dirá"],["SABER","sabr-","sabré","sabrás","sabrá"],["PONER","pondr-","pondré","pondrás","pondrá"]],
+ cond_reg:[{lb:"hablar",f:["hablaría","hablarías","hablaría","hablaríamos","hablaríais","hablarían"]},{lb:"comer",f:["comería","comerías","comería","comeríamos","comeríais","comerían"]},{lb:"vivir",f:["viviría","vivirías","viviría","viviríamos","viviríais","vivirían"]}],
+ cond_irr:[["TENER","tendr-","tendría","tendrías","tendría"],["HACER","har-","haría","harías","haría"],["PODER","podr-","podría","podrías","podría"],["QUERER","querr-","querría","querrías","querría"],["VENIR","vendr-","vendría","vendrías","vendría"],["DECIR","dir-","diría","dirías","diría"],["SABER","sabr-","sabría","sabrías","sabría"],["PONER","pondr-","pondría","pondrías","pondría"]],
+ subj_reg:[{lb:"-AR (hablar)",f:["hable","hables","hable","hablemos","habléis","hablen"]},{lb:"-ER (comer)",f:["coma","comas","coma","comamos","comáis","coman"]},{lb:"-IR (vivir)",f:["viva","vivas","viva","vivamos","viváis","vivan"]}],
+ subj_sei:[{lb:"SER",f:["sea","seas","sea","seamos","seáis","sean"]},{lb:"ESTAR",f:["esté","estés","esté","estemos","estéis","estén"]},{lb:"IR",f:["vaya","vayas","vaya","vayamos","vayáis","vayan"]},{lb:"SABER",f:["sepa","sepas","sepa","sepamos","sepáis","sepan"]}],
+ subj_go:[{lb:"TENER",f:["tenga","tengas","tenga","tengamos","tengáis","tengan"]},{lb:"HACER",f:["haga","hagas","haga","hagamos","hagáis","hagan"]},{lb:"VENIR",f:["venga","vengas","venga","vengamos","vengáis","vengan"]},{lb:"PONER",f:["ponga","pongas","ponga","pongamos","pongáis","pongan"]}],
+ subj_dp:[{lb:"PODER",f:["pueda","puedas","pueda","podamos","podáis","puedan"]},{lb:"QUERER",f:["quiera","quieras","quiera","queramos","queráis","quieran"]},{lb:"DECIR",f:["diga","digas","diga","digamos","digáis","digan"]}],
+};
+let _cTab='pres';
+function cfTab(t){_cTab=t;['pres','imp','fut','cond','subj'].forEach(k=>{const s=document.getElementById('cfs-'+k),b=document.getElementById('cft-'+k);if(s)s.style.display=k===t?'block':'none';if(b){b.style.background=k===t?CTC[k].c:'#eee';b.style.color=k===t?'#fff':'#444'}});}
+function cfCard(v,col){return v.f.map((fm,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:${i===0?'#F9E79F':i%2===0?'#fff':'#f7f7f7'};border-bottom:1px solid #eee"><span style="font-weight:${i===0?700:400};font-size:.88rem">${CPRN[i]}</span><span style="font-weight:700;color:${i===0?'#7D6608':col};font-size:.95rem">${fm}</span></div>`).join('');}
+function cfCards(arr,col){return arr.map(v=>`<div style="background:#fff;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1);overflow:hidden;margin:4px 0"><div style="background:${col};color:#fff;padding:5px 10px;font-weight:700;font-size:.82rem">${v.lb}</div>${cfCard(v,col)}</div>`).join('');}
+function cfStems(arr,col){return `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.82rem"><thead><tr>${['Verbe','Radical','yo →','tú →','él →'].map(h=>`<th style="background:${col};color:#fff;padding:6px 8px;text-align:center">${h}</th>`).join('')}</tr></thead><tbody>${arr.map(([v,s,...ex],i)=>`<tr style="background:${i%2?'#f7f7f7':'#fff'}"><td style="font-weight:700;padding:5px 8px">${v}</td><td style="font-weight:700;color:${col};text-align:center;padding:5px 8px">${s}</td>${ex.map(e=>`<td style="text-align:center;padding:5px 8px">${e}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;}
+function cfTip(txt,col,light){return `<div style="background:${light};border-radius:6px;padding:8px 12px;margin:6px 0;font-size:.84rem;font-weight:600;color:${col}">★ ${txt}</div>`;}
+function rConjFiche(){
+ const tabs=['pres','imp','fut','cond','subj'];
+ const labels={'pres':'🟥 Présent','imp':'🟦 Imparfait','fut':'🟩 Futur','cond':'🟧 Conditionnel','subj':'🟪 Subjonctif'};
+ const usages={'pres':"Ce que l'on fait maintenant ou habituellement.",'imp':"Ce que l'on faisait dans le passé (habitude, description).",'fut':"Ce que l'on fera.",'cond':"Ce que l'on ferait (si…, politesse).",'subj':"Après 'querer que', 'esperar que'… (souhait, doute)."};
+ function sec(t){const tc=CTC[t];let html=`<div id='cfs-${t}' style='display:${t==='pres'?'block':'none'}'>`;html+=`<div style='background:${tc.c};color:#fff;border-radius:8px;padding:8px 12px;font-weight:700;margin-bottom:6px'>${labels[t]}</div>`;html+=`<div style='background:${tc.l};border-radius:6px;padding:7px 12px;margin-bottom:8px;font-size:.85rem;font-weight:600;color:${tc.c}'>${usages[t]}</div>`;
+  if(t==='pres'){html+=`<div style='font-weight:700;margin:8px 0 4px;font-size:.88rem'>Réguliers</div><div style='display:grid;grid-template-columns:repeat(3,1fr);gap:6px'>${cfCards(CDATA.pres_reg,tc.c)}</div>`;html+=cfTip('SER = permanent · ESTAR = temporaire',tc.c,tc.l);html+=`<div style='font-weight:700;margin:8px 0 4px;font-size:.88rem'>SER / ESTAR / IR</div><div style='display:grid;grid-template-columns:repeat(3,1fr);gap:6px'>${cfCards(CDATA.pres_sei,tc.c)}</div>`;html+=`<div style='font-weight:700;margin:8px 0 4px;font-size:.88rem'>Autres irréguliers</div><div style='display:grid;grid-template-columns:repeat(4,1fr);gap:6px'>${cfCards(CDATA.pres_ot,tc.c)}</div>`;html+=cfTip('TENGO, HAGO, PONGO, VENGO, DIGO = YO irrégulier !',tc.c,tc.l);}
+  else if(t==='imp'){html+=`<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:6px'>${cfCards(CDATA.imp_reg,tc.c)}</div>`;html+=cfTip("Seulement 3 vrais irréguliers à l'imparfait !",tc.c,tc.l);html+=`<div style='font-weight:700;margin:8px 0 4px;font-size:.88rem'>3 seuls irréguliers</div><div style='display:grid;grid-template-columns:repeat(3,1fr);gap:6px'>${cfCards(CDATA.imp_irr,tc.c)}</div>`;html+=`<div style='font-weight:700;margin:8px 0 4px;font-size:.88rem'>Les autres — règle normale</div><div style='display:grid;grid-template-columns:repeat(4,1fr);gap:6px'>${cfCards(CDATA.imp_ot,tc.c)}</div>`;}
+  else if(t==='fut'){html+=cfTip('Terminaisons : é / ás / á / emos / éis / án — identiques pour tous !',tc.c,tc.l);html+=`<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:6px'>${cfCards(CDATA.fut_reg,tc.c)}</div>`;html+=`<div style='font-weight:700;margin:8px 0 4px;font-size:.88rem'>Radicaux irréguliers</div>`;html+=cfStems(CDATA.fut_irr,tc.c);html+=cfTip('TENER→tendr / HACER→har / PODER→podr / QUERER→querr / VENIR→vendr / DECIR→dir / SABER→sabr / PONER→pondr',tc.c,tc.l);}
+  else if(t==='cond'){html+=cfTip('Mêmes radicaux irréguliers qu\'au futur ! Terminaisons : ía / ías / ía / íamos / íais / ían',tc.c,tc.l);html+=`<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:6px'>${cfCards(CDATA.cond_reg,tc.c)}</div>`;html+=cfStems(CDATA.cond_irr,tc.c);}
+  else if(t==='subj'){html+=`<div style='background:${tc.l};border-radius:8px;padding:10px 12px;margin:6px 0;font-size:.88rem;line-height:1.7;color:${tc.c}'><b>Règle du « yo miroir » :</b><br>1. Prends le YO au présent. 2. Retire le -o. 3. Ajoute :<br>• -AR → terminaisons en <b>-E</b> (hable, hables…)<br>• -ER/-IR → terminaisons en <b>-A</b> (coma, comas…)</div>`;html+=`<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:6px'>${cfCards(CDATA.subj_reg,tc.c)}</div>`;html+=`<div style='font-weight:700;margin:8px 0 4px;font-size:.88rem'>SER / ESTAR / IR / SABER</div><div style='display:grid;grid-template-columns:repeat(4,1fr);gap:6px'>${cfCards(CDATA.subj_sei,tc.c)}</div>`;html+=`<div style='font-weight:700;margin:8px 0 4px;font-size:.88rem'>Verbes en -GO</div><div style='display:grid;grid-template-columns:repeat(4,1fr);gap:6px'>${cfCards(CDATA.subj_go,tc.c)}</div>`;html+=`<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:6px'>${cfCards(CDATA.subj_dp,tc.c)}</div>`;html+=cfTip('TENGO→tenga, HAGO→haga, VENGO→venga, PONGO→ponga : le radical YO reste !',tc.c,tc.l);}
+  html+='</div>';return html;}
+ const tabBar=tabs.map(t=>`<button id='cft-${t}' onclick='cfTab("${t}")' style='padding:7px 10px;border:none;border-radius:16px;font-size:.78rem;font-weight:700;cursor:pointer;background:${t==='pres'?CTC[t].c:'#eee'};color:${t==='pres'?'#fff':'#444'};margin:2px'>${labels[t]}</button>`).join('');
+ return `<div style='padding:0 8px'><div style='display:flex;flex-wrap:wrap;gap:2px;margin-bottom:10px'>${tabBar}</div>${tabs.map(t=>sec(t)).join('')}</div>`;}
+
+/* ══ CONJUGAISONS QUIZLET ══ */
+const CRAW=[
+["hablar","parler",0,"pres","hablo"],["hablar","parler",1,"pres","hablas"],["hablar","parler",2,"pres","habla"],["hablar","parler",3,"pres","hablamos"],
+["comer","manger",0,"pres","como"],["comer","manger",1,"pres","comes"],["vivir","vivre",0,"pres","vivo"],["vivir","vivre",1,"pres","vives"],
+["ser","être",0,"pres","soy"],["ser","être",1,"pres","eres"],["ser","être",2,"pres","es"],["ser","être",3,"pres","somos"],
+["estar","être(état)",0,"pres","estoy"],["estar","être(état)",1,"pres","estás"],["estar","être(état)",2,"pres","está"],
+["ir","aller",0,"pres","voy"],["ir","aller",1,"pres","vas"],["ir","aller",2,"pres","va"],
+["tener","avoir",0,"pres","tengo"],["tener","avoir",1,"pres","tienes"],["hacer","faire",0,"pres","hago"],["hacer","faire",1,"pres","haces"],
+["poder","pouvoir",0,"pres","puedo"],["querer","vouloir",0,"pres","quiero"],["querer","vouloir",1,"pres","quieres"],
+["venir","venir",0,"pres","vengo"],["decir","dire",0,"pres","digo"],["saber","savoir",0,"pres","sé"],["poner","mettre",0,"pres","pongo"],
+["hablar","parler",0,"imp","hablaba"],["hablar","parler",1,"imp","hablabas"],["hablar","parler",3,"imp","hablábamos"],
+["comer","manger",0,"imp","comía"],["vivir","vivre",0,"imp","vivía"],
+["ser","être",0,"imp","era"],["ser","être",1,"imp","eras"],["ser","être",3,"imp","éramos"],
+["ir","aller",0,"imp","iba"],["ir","aller",1,"imp","ibas"],["ver","voir",0,"imp","veía"],
+["estar","être(état)",0,"imp","estaba"],["tener","avoir",0,"imp","tenía"],["hacer","faire",0,"imp","hacía"],
+["poder","pouvoir",0,"imp","podía"],["querer","vouloir",0,"imp","quería"],["venir","venir",0,"imp","venía"],["poner","mettre",0,"imp","ponía"],
+["hablar","parler",0,"fut","hablaré"],["hablar","parler",1,"fut","hablarás"],["hablar","parler",2,"fut","hablará"],
+["comer","manger",0,"fut","comeré"],["vivir","vivre",0,"fut","viviré"],
+["tener","avoir",0,"fut","tendré"],["tener","avoir",1,"fut","tendrás"],["tener","avoir",2,"fut","tendrá"],
+["hacer","faire",0,"fut","haré"],["hacer","faire",1,"fut","harás"],["poder","pouvoir",0,"fut","podré"],
+["querer","vouloir",0,"fut","querré"],["venir","venir",0,"fut","vendré"],["decir","dire",0,"fut","diré"],
+["saber","savoir",0,"fut","sabré"],["poner","mettre",0,"fut","pondré"],
+["hablar","parler",0,"cond","hablaría"],["hablar","parler",1,"cond","hablarías"],
+["comer","manger",0,"cond","comería"],["vivir","vivre",0,"cond","viviría"],
+["tener","avoir",0,"cond","tendría"],["hacer","faire",0,"cond","haría"],["poder","pouvoir",0,"cond","podría"],
+["querer","vouloir",0,"cond","querría"],["venir","venir",0,"cond","vendría"],["decir","dire",0,"cond","diría"],
+["saber","savoir",0,"cond","sabría"],["poner","mettre",0,"cond","pondría"],
+["hablar","parler",0,"subj","hable"],["hablar","parler",1,"subj","hables"],["hablar","parler",3,"subj","hablemos"],
+["comer","manger",0,"subj","coma"],["comer","manger",1,"subj","comas"],["vivir","vivre",0,"subj","viva"],
+["ser","être",0,"subj","sea"],["estar","être(état)",0,"subj","esté"],["ir","aller",0,"subj","vaya"],
+["tener","avoir",0,"subj","tenga"],["hacer","faire",0,"subj","haga"],["poder","pouvoir",0,"subj","pueda"],
+["querer","vouloir",0,"subj","quiera"],["venir","venir",0,"subj","venga"],["poner","mettre",0,"subj","ponga"],["saber","savoir",0,"subj","sepa"],
+];
+const CPRN2=["yo","tú","él/ella","nosotros","vosotros","ellos/as"];
+let cqMode='flash',cqTenses=new Set(['pres','imp','fut','cond','subj']),cqDeck=[],cqIdx=0,cqSc=0,cqTot=0,cqAns2=false;
+function cqPool(){return CRAW.filter(x=>cqTenses.has(x[3]));}
+function cqShuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]]}return b;}
+function cqBuild(){cqDeck=cqShuffle(cqPool());cqIdx=0;cqSc=0;cqTot=0;cqAns2=false;}
+function cqBadge(){const el=document.getElementById('cq-badge');if(el)el.textContent=cqMode==='flash'?(cqIdx+1)+'/'+cqDeck.length:cqSc+'/'+cqTot;}
+function cqProg(){const el=document.getElementById('cq-prog');if(!el)return;const pct=cqDeck.length?(cqIdx/cqDeck.length)*100:0;el.style.width=pct+'%';el.style.background=cqDeck[cqIdx]?CTC[cqDeck[cqIdx][3]].c:'#ccc';}
+function cqRender(){const app=document.getElementById('cq-app');if(!app)return;if(!cqDeck.length){app.innerHTML='<div style="text-align:center;padding:2rem;color:#999">Sélectionne au moins un temps.</div>';return;}if(cqIdx>=cqDeck.length){cqDone();return;}cqProg();cqBadge();cqMode==='flash'?cqFlashRender():cqQcmRender();}
+function cqFlashRender(){const [v,tr,pi,t,ans]=cqDeck[cqIdx];const tc=CTC[t];const app=document.getElementById('cq-app');
+ app.innerHTML=`<div id='cq-fc' onclick='cqFlip()' style='background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.12);padding:1.5rem;text-align:center;cursor:pointer;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center'>
+  <div id='cq-front'><div style='font-size:.78rem;font-weight:700;color:${tc.c};text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem'>${tc.label}</div><div style='font-size:1.8rem;font-weight:700;color:${tc.c}'>${v.toUpperCase()}</div><div style='color:#666;margin:.3rem 0'>${tr} · <b>${CPRN2[pi]}</b></div><div style='font-size:.78rem;color:#bbb;margin-top:.5rem'>Touche pour voir la réponse ↩</div></div>
+  <div id='cq-back' style='display:none'><div style='font-size:.78rem;font-weight:700;color:${tc.c}'>${tc.label} · ${CPRN2[pi]}</div><div style='font-size:1.8rem;font-weight:700;color:${tc.c};margin:.3rem 0'>${v.toUpperCase()}</div><div style='font-size:2rem;font-weight:700;color:${tc.c}'>${ans}</div><div style='font-size:.82rem;color:#666'>${tr}</div></div>
+ </div>
+ <div style='display:flex;gap:.7rem;justify-content:center;margin-top:.7rem;flex-wrap:wrap'>
+  <button onclick='cqPrev()' style='padding:.5rem 1.1rem;border-radius:16px;border:2px solid #444;background:transparent;cursor:pointer;font-weight:600' ${cqIdx===0?'disabled':''}>← Préc.</button>
+  <span style='font-size:.85rem;color:#777;font-weight:600;align-self:center'>${cqIdx+1} / ${cqDeck.length}</span>
+  <button onclick='cqNext()' style='padding:.5rem 1.1rem;border-radius:16px;border:none;background:#444;color:#fff;cursor:pointer;font-weight:600'>Suiv. →</button>
+ </div>`;}
+function cqFlip(){const f=document.getElementById('cq-front'),b=document.getElementById('cq-back');if(f&&b){f.style.display='none';b.style.display='block';}}
+function cqPrev(){if(cqIdx>0){cqIdx--;cqRender();}}
+function cqNext(){if(cqIdx<cqDeck.length-1){cqIdx++;cqRender();}else cqDone();}
+function cqOrtho(form,tense){const vs=new Set();const noAcc=form.replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i').replace(/ó/g,'o').replace(/ú/g,'u');if(noAcc!==form)vs.add(noAcc);const fva={a:'á',e:'é',o:'ó'};const lc=form.slice(-1);if(fva[lc])vs.add(form.slice(0,-1)+fva[lc]);if(form.includes('b'))vs.add(form.replace(/b/,'v'));if(form.includes('v'))vs.add(form.replace(/v/,'b'));if(tense==='pres'){if(form.endsWith('go'))vs.add(form.slice(0,-2)+'o');if(form.includes('ie'))vs.add(form.replace('ie','e'));if(form.includes('ue'))vs.add(form.replace('ue','o'));if(form.endsWith('o'))vs.add(form.slice(0,-1)+'a');if(form.endsWith('oy'))vs.add(form.slice(0,-2)+'o');}if(tense==='imp'){if(form.endsWith('aba'))vs.add(form.slice(0,-3)+'ía');if(form.endsWith('abas'))vs.add(form.slice(0,-4)+'ías');if(form.endsWith('ía'))vs.add(form.slice(0,-2)+'aba');if(form.endsWith('ías'))vs.add(form.slice(0,-3)+'abas');if(form==='era')vs.add('ería');if(form==='eras')vs.add('erías');}if(tense==='fut'){if(form.endsWith('é'))vs.add(form.slice(0,-1)+'ía');if(form.endsWith('ás'))vs.add(form.slice(0,-2)+'ías');if(form.endsWith('á'))vs.add(form.slice(0,-1)+'ía');if(form.includes('ndr'))vs.add(form.replace('ndr','ner'));if(form.includes('rr'))vs.add(form.replace('rr','r'));if(form.startsWith('har'))vs.add('hacer'+form.slice(3));if(form.startsWith('dir'))vs.add('decir'+form.slice(3));if(form.startsWith('sabr'))vs.add('saber'+form.slice(4));if(form.startsWith('pondr'))vs.add('poner'+form.slice(5));}if(tense==='cond'){if(form.endsWith('ía'))vs.add(form.slice(0,-2)+'é');if(form.endsWith('ías'))vs.add(form.slice(0,-3)+'ás');if(form.endsWith('íamos'))vs.add(form.slice(0,-5)+'emos');if(form.includes('ndr'))vs.add(form.replace('ndr','ner'));if(form.includes('rr'))vs.add(form.replace('rr','r'));if(form.startsWith('har'))vs.add('hacer'+form.slice(3));if(form.startsWith('dir'))vs.add('decir'+form.slice(3));}if(tense==='subj'){if(form.endsWith('e'))vs.add(form.slice(0,-1)+'a');if(form.endsWith('es'))vs.add(form.slice(0,-2)+'as');if(form.endsWith('ga'))vs.add(form.slice(0,-2)+'ja');if(form.endsWith('gas'))vs.add(form.slice(0,-3)+'jas');if(form.includes('ya'))vs.add(form.replace('ya','ia'));if(form.endsWith('a')&&!form.endsWith('ga')&&!form.endsWith('ya'))vs.add(form.slice(0,-1)+'e');if(form==='esté')vs.add('este');if(form==='sepa')vs.add('sapa');}vs.delete(form);const arr=[...vs].filter(x=>x&&x!==form);for(let i=arr.length-1;i>0;i--){const j=0|Math.random()*(i+1);[arr[i],arr[j]]=[arr[j],arr[i]];}return arr.slice(0,3);}
+function cqQcmRender(){const [v,tr,pi,t,ans]=cqDeck[cqIdx];const tc=CTC[t];
+ const wa=cqOrtho(ans,t);while(wa.length<3)wa.push('—');
+ const ch=cqShuffle([ans,...wa.slice(0,3)]);
+ cqAns2=false;
+ const app=document.getElementById('cq-app');
+ app.innerHTML=`<div style='background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.12);padding:1.2rem;text-align:center;margin-bottom:.7rem'>
+  <div style='font-size:.78rem;font-weight:700;color:${tc.c};text-transform:uppercase'>${tc.label}</div>
+  <div style='font-size:1.8rem;font-weight:700;color:${tc.c}'>${v.toUpperCase()}</div>
+  <div style='color:#666'>${tr} · <b>${CPRN2[pi]}</b></div></div>
+ <div style='display:grid;grid-template-columns:1fr 1fr;gap:.6rem'>
+  ${ch.map(c=>`<button onclick='cqAns("${c}","${ans}",this)' style='padding:.8rem;border-radius:8px;border:2px solid #ddd;background:#fff;font-size:1rem;font-weight:700;cursor:pointer'>${c}</button>`).join('')}
+ </div>
+ <div id='cq-fb'></div>
+ <div style='display:flex;justify-content:center;margin-top:.6rem'>
+  <button id='cq-nxt' onclick='cqNextQ()' disabled style='padding:.5rem 1.4rem;border-radius:16px;border:none;background:#444;color:#fff;cursor:pointer;font-weight:600;opacity:.4'>Suivant →</button>
+ </div>`;}
+function cqAns(chosen,ans,btn){if(cqAns2)return;cqAns2=true;cqTot++;const ok=chosen===ans;if(ok)cqSc++;
+ document.querySelectorAll('#cq-app button').forEach(b=>{b.disabled=true;if(b.textContent===ans)b.style.cssText+=';background:#d5f5e3;border-color:#27AE60;color:#27AE60';else if(b===btn&&!ok)b.style.cssText+=';background:#FADBD8;border-color:#C0392B;color:#C0392B';});
+ const fb=document.getElementById('cq-fb');if(fb)fb.innerHTML=ok?`<div style='text-align:center;font-weight:700;color:#27AE60;padding:.4rem'>✅ Bravo !</div>`:`<div style='text-align:center;font-weight:700;color:#C0392B;padding:.4rem'>❌ C'était : <b>${ans}</b></div>`;
+ const nb=document.getElementById('cq-nxt');if(nb){nb.style.opacity='1';}cqBadge();}
+function cqNextQ(){if(cqIdx<cqDeck.length-1){cqIdx++;cqRender();}else cqDone();}
+function cqDone(){const pct=cqTot?Math.round(cqSc/cqTot*100):0;const app=document.getElementById('cq-app');if(!app)return;app.innerHTML=`<div style='background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.12);padding:2rem;text-align:center'><div style='font-size:2.5rem'>${pct>=80?'🌟':pct>=60?'👍':'💪'}</div><div style='font-size:1.3rem;font-weight:700;margin:.4rem 0'>Terminé !</div><div style='font-size:2.5rem;font-weight:700;color:${pct>=60?'#27AE60':'#C0392B'}'>${cqMode==='flash'?cqDeck.length+' vues':cqSc+'/'+cqTot}</div>${cqMode==='qcm'?`<div style='color:#777;margin:.4rem 0'>${pct}% de bonnes réponses</div>`:''}<div style='display:flex;gap:.7rem;justify-content:center;margin-top:1rem;flex-wrap:wrap'><button onclick='cqRestart()' style='padding:.5rem 1.2rem;border-radius:16px;border:none;background:#444;color:#fff;cursor:pointer;font-weight:600'>🔄 Recommencer</button></div></div>`;}
+function cqRestart(){cqBuild();cqRender();}
+function cqToggleTense(t,cb){if(cb.checked)cqTenses.add(t);else cqTenses.delete(t);const lbl=cb.parentElement;lbl.style.background=cb.checked?CTC[t].l:'#eee';lbl.style.color=cb.checked?CTC[t].c:'#555';cqBuild();cqRender();}
+function cqSetMode(m){cqMode=m;document.getElementById('cq-mf').style.background=m==='flash'?'#444':'transparent';document.getElementById('cq-mf').style.color=m==='flash'?'#fff':'#444';document.getElementById('cq-mq').style.background=m==='qcm'?'#444':'transparent';document.getElementById('cq-mq').style.color=m==='qcm'?'#fff':'#444';cqBuild();cqRender();}
+function rConjQuizlet(){
+ cqBuild();
+ const tensCbs=['pres','imp','fut','cond','subj'].map(t=>`<label onclick='void(0)' style='display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem;font-weight:600;cursor:pointer;padding:.3rem .6rem;border-radius:10px;border:2px solid ${CTC[t].c};background:${CTC[t].l};color:${CTC[t].c}'><input type='checkbox' checked onchange='cqToggleTense("${t}",this)' style='display:none'>${CTC[t].label}</label>`).join('');
+ return `<div style='padding:0 8px'>
+  <div style='background:#444;color:#fff;border-radius:10px;padding:.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem'>
+   <span style='font-weight:700'>🇪🇸 Conjugaisons</span>
+   <span id='cq-badge' style='background:#F9E79F;color:#7D6608;font-weight:700;border-radius:12px;padding:.2rem .7rem;font-size:.85rem'>0/0</span>
+  </div>
+  <div style='display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.6rem .8rem;margin-bottom:.5rem'>
+   <button id='cq-mf' onclick='cqSetMode("flash")' style='padding:.4rem .9rem;border-radius:14px;border:2px solid #444;background:#444;color:#fff;font-size:.82rem;font-weight:600;cursor:pointer'>🃏 Flashcards</button>
+   <button id='cq-mq' onclick='cqSetMode("qcm")' style='padding:.4rem .9rem;border-radius:14px;border:2px solid #444;background:transparent;color:#444;font-size:.82rem;font-weight:600;cursor:pointer'>🎯 QCM</button>
+   <span style='font-size:.78rem;color:#999;font-weight:600'>Temps :</span>${tensCbs}
+  </div>
+  <div style='height:5px;background:#eee;border-radius:3px;margin-bottom:.5rem;overflow:hidden'><div id='cq-prog' style='height:100%;border-radius:3px;width:0%;transition:.3s'></div></div>
+  <div id='cq-app'></div></div>`;}
+
+/* ══ PROMPT RENDERER ══ */
+function rPrompt(){
+ const C='#555566',CL='#f0f0f4';
+ function blk(title,col,items){return `<div style='margin:0 0 .8rem'><div style='background:${col};color:#fff;border-radius:8px 8px 0 0;padding:7px 12px;font-weight:700;font-size:.88rem'>${title}</div><div style='background:#fff;border-radius:0 0 8px 8px;box-shadow:0 2px 6px rgba(0,0,0,.08);padding:10px 12px;font-size:.85rem;line-height:1.7'>${items}</div></div>`;}
+ return `<div style='padding:0 8px'>
+  <div style='background:${C};color:#fff;border-radius:10px;padding:1rem 1.2rem;margin-bottom:.8rem;text-align:center'>
+   <div style='font-size:1.1rem;font-weight:700'>📋 Prompt global — Ia Juliette</div>
+   <div style='font-size:.82rem;opacity:.8;margin-top:.2rem'>Conventions &amp; instructions pour Claude</div>
+  </div>
+  ${blk('📁 Structure du dossier',C,
+   '<b>Ia Juliette/</b> (iCloud Drive, partagé Sophie &amp; Mathieu)<br>'+
+   '├── <b>college.html</b> — index local Mac (racine)<br>'+
+   '├── <b>utilitaire/index.html</b> — SPA Netlify (iPhone/iPad)<br>'+
+   '└── Matière/ → fiches/ · exercices/ · corrections/ · scan_photos/')}
+  ${blk('✏️ Nommage des fichiers',C,
+   '<b>Règle 1</b> — Sujet en premier : <code>verbes-irreguliers_fiche.pdf</code><br>'+
+   '<b>Règle 2</b> — Toujours dans un sous-dossier (jamais à la racine d\'une matière)<br>'+
+   '<b>Règle 3</b> — Exercices HTML → exercices/ · Interface → utilitaire/app/<br>'+
+   '<b>Règle 4</b> — QCM : variantes orthographiques voisines comme leurres (toutes langues)')}
+  ${blk('📄 PDF — Règles OBLIGATOIRES',C,
+   '① Titre/sous-titre + tableau = toujours dans <b>KeepTogether([])</b><br>'+
+   '② <b>splitByRow=0</b> sur tous les tableaux — aucune coupure entre pages<br>'+
+   '③ <b>PageBreak()</b> entre sections — mieux vaut demi-page vide que tableau coupé<br>'+
+   '④ BookmarkDocTemplate · balises &lt;super&gt;/&lt;sub&gt; · jamais d\'unicode ¹²³')}
+  ${blk('🎯 QCM — variantes orthographiques',C,
+   '<b>Anglais</b> : forme régularisée (goed), mauvaise voyelle, confusion pp/prétérit<br>'+
+   '<b>Espagnol</b> : accent manquant/déplacé, confusion b/v, mauvaise terminaison<br>'+
+   '(futur↔conditionnel : hablaré→hablaría), radical raté (tengo→teno)<br>'+
+   '→ S\'applique au fichier standalone ET au renderer dans index.html')}
+  ${blk('🔄 Workflow nouveau document',C,
+   '① Original dans Matière/sous-dossier/<br>'+
+   '② Version HTML dans utilitaire/app/Matière/sous-dossier/<br>'+
+   '③ Mettre à jour <b>college.html</b> (COLLEGE_DATA_START/END)<br>'+
+   '④ Mettre à jour <b>index.html</b> (MATS + RND map + renderer)')}
+ </div>`;}
+
+/* ══ RENDERERS MAP ══ */
+const RND={
+  'anglais/fiches/verbes-irreguliers_fiche':{fn:rFiche,title:'Verbes Irréguliers',sub:'Fiche · Anglais'},
+  'anglais/exercices/verbes-irreguliers_quizlet':{fn:rQuizlet,title:'Verbes Irréguliers',sub:'Quizlet · Anglais'},
+  'espagnol/fiches/verbes-irreguliers-present_fiche':{fn:rFicheEsp,title:'Verbes Irréguliers — Présent',sub:'Fiche · Espagnol'},
+  'espagnol/fiches/conjugaisons_fiche':{fn:rConjFiche,title:'Conjugaisons — Tous les temps',sub:'Fiche · Espagnol'},
+  'espagnol/exercices/conjugaisons_quizlet':{fn:rConjQuizlet,title:'Conjugaisons',sub:'Quizlet · Espagnol'},
+  'utilitaire/fiches/prompt-global_ia-juliette':{fn:rPrompt,title:'Prompt global Ia Juliette',sub:'Guide · Utilitaire'}
+};
+
+/* ══ ROUTER ══ */
+let stack=[];
+function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));document.getElementById('v-'+id).classList.add('on')}
+function hdr(t,s,back){document.getElementById('hdr-title').textContent=t;document.getElementById('hdr-sub').textContent=s;document.getElementById('hdr-back').classList.toggle('on',back)}
+
+function renderHome(){
+  const tot=MATS.reduce((s,m)=>s+m.docs.fiches.length+m.docs.exercices.length+m.docs.corrections.length,0);
+  document.getElementById('pills').innerHTML=
+    `<div class="pill">📚 ${MATS.length} matières</div><div class="pill">📄 ${tot} doc${tot>1?'s':''}</div><div class="pill">📅 Avril 2026</div>`;
+  document.getElementById('grid').innerHTML=MATS.map(m=>{
+    const c=m.docs.fiches.length+m.docs.exercices.length+m.docs.corrections.length;
+    return `<div class="mc${c===0?' dim':''}" onclick="openMat('${m.id}')">
+      <div class="mc-em">${m.emoji}</div>
+      <div class="mc-nm">${m.name}</div>
+      <div class="mc-ct" style="background:${m.bb};color:${m.bt}">${c} doc${c>1?'s':''}</div>
+    </div>`}).join('')}
+
+function openMat(id){
+  const m=MATS.find(x=>x.id===id);if(!m)return;
+  stack=[id];hdr(m.name,`${m.emoji} 4ème`,true);
+  const SFS=[['fiches','📋 Fiches','fi'],['exercices','✏️ Exercices','ex'],['corrections','✅ Corrections','co']];
+  document.getElementById('dl').innerHTML=SFS.map(([sf,lbl,tc])=>{
+    const docs=m.docs[sf]||[];
+    const items=docs.length===0?`<div class="sf-empty">Aucun document</div>`
+      :docs.map(d=>`<div class="di" onclick="openDoc('${m.id}','${sf}','${d.id}')">
+        <span class="di-ic">${d.ic}</span>
+        <div class="di-inf"><div class="di-nm">${d.name}</div>
+        <span class="di-tp tp-${tc}">${d.lbl}</span></div>
+        <span class="di-ar">›</span></div>`).join('');
+    return `<div class="sf"><div class="sf-lbl">${lbl}</div>${items}</div>`}).join('');
+  show('mat');window.scrollTo(0,0)}
+
+function openDoc(mid,sf,did){
+  const key=`${mid}/${sf}/${did}`;const r=RND[key];if(!r)return;
+  stack.push(did);hdr(r.title,r.sub,true);
+  document.getElementById('dv').innerHTML=r.fn();
+  show('doc');window.scrollTo(0,0);
+  if(did.includes('quizlet')){qDk=sh(VERBS);qI=0;qSc=0;qTot=0}}
+
+function goBack(){
+  stack.pop();
+  if(stack.length===0){hdr('📚 Ia Juliette','4ème',false);show('home')}
+  else{const m=MATS.find(x=>x.id===stack[0]);if(m)openMat(m.id)}
+  window.scrollTo(0,0)}
+
+let sOpen=false;
+function toggleSearch(){sOpen=!sOpen;document.getElementById('srch-wrap').classList.toggle('on',sOpen);
+  if(sOpen)document.getElementById('srch-inp').focus();
+  else{document.getElementById('srch-inp').value='';filterMat('')}}
+function filterMat(q){document.querySelectorAll('.mc').forEach(c=>{
+  c.style.display=!q||c.querySelector('.mc-nm').textContent.toLowerCase().includes(q.toLowerCase())?'':'none'})}
+
+renderHome();
+</script>
+</body>
+</html>
