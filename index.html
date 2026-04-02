@@ -522,7 +522,7 @@ function cqQcmRender(){const [v,tr,pi,t,ans]=cqDeck[cqIdx];const tc=CTC[t];
 function cqAns(chosen,ans,btn){if(cqAns2)return;cqAns2=true;cqTot++;const ok=chosen===ans;if(ok)cqSc++;
  document.querySelectorAll('#cq-app button').forEach(b=>{b.disabled=true;if(b.textContent===ans)b.style.cssText+=';background:#d5f5e3;border-color:#27AE60;color:#27AE60';else if(b===btn&&!ok)b.style.cssText+=';background:#FADBD8;border-color:#C0392B;color:#C0392B';});
  const fb=document.getElementById('cq-fb');if(fb)fb.innerHTML=ok?`<div style='text-align:center;font-weight:700;color:#27AE60;padding:.4rem'>✅ Bravo !</div>`:`<div style='text-align:center;font-weight:700;color:#C0392B;padding:.4rem'>❌ C'était : <b>${ans}</b></div>`;
- const nb=document.getElementById('cq-nxt');if(nb){nb.style.opacity='1';}cqBadge();}
+ const nb=document.getElementById('cq-nxt');if(nb){nb.style.opacity='1';nb.disabled=false;}cqBadge();}
 function cqNextQ(){if(cqIdx<cqDeck.length-1){cqIdx++;cqRender();}else cqDone();}
 function cqDone(){const pct=cqTot?Math.round(cqSc/cqTot*100):0;const app=document.getElementById('cq-app');if(!app)return;app.innerHTML=`<div style='background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.12);padding:2rem;text-align:center'><div style='font-size:2.5rem'>${pct>=80?'🌟':pct>=60?'👍':'💪'}</div><div style='font-size:1.3rem;font-weight:700;margin:.4rem 0'>Terminé !</div><div style='font-size:2.5rem;font-weight:700;color:${pct>=60?'#27AE60':'#C0392B'}'>${cqMode==='flash'?cqDeck.length+' vues':cqSc+'/'+cqTot}</div>${cqMode==='qcm'?`<div style='color:#777;margin:.4rem 0'>${pct}% de bonnes réponses</div>`:''}<div style='display:flex;gap:.7rem;justify-content:center;margin-top:1rem;flex-wrap:wrap'><button onclick='cqRestart()' style='padding:.5rem 1.2rem;border-radius:16px;border:none;background:#444;color:#fff;cursor:pointer;font-weight:600'>🔄 Recommencer</button></div></div>`;}
 function cqRestart(){cqBuild();cqRender();}
@@ -627,7 +627,8 @@ function openDoc(mid,sf,did){
   stack.push(did);hdr(r.title,r.sub,true);
   document.getElementById('dv').innerHTML=r.fn();
   show('doc');window.scrollTo(0,0);
-  if(did.includes('quizlet')){qDk=sh(VERBS);qI=0;qSc=0;qTot=0}}
+  if(did.includes('quizlet')){qDk=sh(VERBS);qI=0;qSc=0;qTot=0}
+  if(did==='conjugaisons_quizlet'){cqRender();}}
 
 function goBack(){
   stack.pop();
