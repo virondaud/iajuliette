@@ -184,8 +184,14 @@ main{padding-top:calc(var(--hh) + env(safe-area-inset-top,0) + 12px);padding-bot
 const MATS=[
   {id:"anglais",name:"Anglais",emoji:"🇬🇧",color:"#2980b9",bb:"#eaf4fb",bt:"#2980b9",
    docs:{
-     fiches:[{id:"verbes-irreguliers_fiche",name:"Verbes Irréguliers",lbl:"Fiche",ic:"📋"}],
-     exercices:[{id:"verbes-irreguliers_quizlet",name:"Verbes Irréguliers",lbl:"Quizlet",ic:"✏️"}],
+     fiches:[
+       {id:"verbes-irreguliers_fiche",name:"Verbes Irréguliers",lbl:"Fiche",ic:"📋"},
+       {id:"aussie-experience_fiche",name:"The Aussie Experience — Vocabulaire",lbl:"Fiche",ic:"🇦🇺"}
+     ],
+     exercices:[
+       {id:"verbes-irreguliers_quizlet",name:"Verbes Irréguliers",lbl:"Quizlet",ic:"✏️"},
+       {id:"aussie-experience_quizlet",name:"The Aussie Experience",lbl:"Quizlet",ic:"🎯"}
+     ],
      corrections:[]}},
   {id:"francais",name:"Français",emoji:"📖",color:"#e74c3c",bb:"#fde8e8",bt:"#e74c3c",docs:{fiches:[
     {id:"figures-de-style_fiche",name:"Figures de Style — Cours",lbl:"Fiche",ic:"📋"},
@@ -193,8 +199,11 @@ const MATS=[
   ],exercices:[
     {id:"figures-de-style_quizlet",name:"Figures de Style",lbl:"Quizlet",ic:"🎯"}
   ],corrections:[]}},
-  {id:"maths",name:"Mathématiques",emoji:"🔢",color:"#9b59b6",bb:"#f5eef8",bt:"#9b59b6",docs:{fiches:[],exercices:[],corrections:[]}},
-  {id:"histgeo",name:"Histoire-Géo",emoji:"🌍",color:"#e67e22",bb:"#fef5e7",bt:"#e67e22",docs:{fiches:[],exercices:[],corrections:[]}},
+  {id:"maths",name:"Mathématiques",emoji:"🔢",color:"#9b59b6",bb:"#f5eef8",bt:"#9b59b6",docs:{fiches:[{id:"probabilites_fiche",name:"Probabilités — Ch.12",lbl:"Fiche",ic:"🎲"}],exercices:[{id:"probabilites_quizlet",name:"Probabilités",lbl:"Quizlet",ic:"🎯"}],corrections:[]}},
+  {id:"histgeo",name:"Histoire-Géo",emoji:"🌍",color:"#e67e22",bb:"#fef5e7",bt:"#e67e22",docs:{
+    fiches:[{id:"migrations_fiche",name:"Un monde de migrants — Ch.11",lbl:"Fiche",ic:"🌍"}],
+    exercices:[{id:"migrations_quizlet",name:"Un monde de migrants",lbl:"Quizlet",ic:"🎯"}],
+    corrections:[]}},
   {id:"svt",name:"SVT",emoji:"🌿",color:"#27ae60",bb:"#eafaf1",bt:"#27ae60",docs:{fiches:[],exercices:[],corrections:[]}},
   {id:"pc",name:"Physique-Chimie",emoji:"⚗️",color:"#16a085",bb:"#e8f8f5",bt:"#16a085",docs:{fiches:[],exercices:[],corrections:[]}},
   {id:"espagnol",name:"Espagnol",emoji:"🇪🇸",color:"#f39c12",bb:"#fef9e7",bt:"#d68910",docs:{fiches:[{id:"verbes-irreguliers-present_fiche",name:"Verbes Irréguliers — Présent",lbl:"Fiche",ic:"📋"},{id:"conjugaisons_fiche",name:"Conjugaisons — Tous les temps",lbl:"Fiche",ic:"📚"}],exercices:[{id:"conjugaisons_quizlet",name:"Conjugaisons",lbl:"Quizlet",ic:"🎯"}],corrections:[]}},
@@ -787,16 +796,544 @@ function rFiguresQuizlet(){
   <div style='height:5px;background:#eee;border-radius:3px;margin-bottom:.5rem;overflow:hidden'><div id='fr-prog' style='height:100%;border-radius:3px;width:0%;transition:.3s'></div></div>
   <div id='fr-app'></div></div>`;}
 
+/* ══ MATHÉMATIQUES — PROBABILITÉS ══ */
+const PROBA_CATS=[
+  {id:'vocab',title:'Vocabulaire de base',color:'#7d3c98',light:'#e8daef'},
+  {id:'proba',title:'La probabilité',color:'#2471a3',light:'#d6eaf8'},
+  {id:'contraire',title:'Événement contraire',color:'#1e8449',light:'#d5f5e3'},
+];
+const PROBA_CARDS=[
+  {id:'exp_alea',cat:'vocab',term:'Expérience aléatoire',def:'Expérience dont le résultat <b>dépend du hasard</b>.',ex:'Lancer un dé, tirer une pièce.'},
+  {id:'issue',cat:'vocab',term:'Issue',def:'<b>Résultat possible</b> d\'une expérience aléatoire.',ex:'Obtenir un 5 au lancer d\'un dé.'},
+  {id:'evenement',cat:'vocab',term:'Événement',def:'Ensemble constitué de <b>certaines issues</b> d\'une expérience aléatoire, noté par une majuscule.',ex:'A : « pair » → {2,4,6}.'},
+  {id:'proba_def',cat:'proba',term:'Probabilité',def:'Nombre <b>compris entre 0 et 1</b> exprimant la chance qu\'un événement se produise.',ex:'Fraction, décimale ou %.'},
+  {id:'proba_0',cat:'proba',term:'Probabilité = 0',def:'L\'événement est <b>impossible</b>, il ne se produit <b>jamais</b>.',ex:'P(obtenir 7 sur un dé à 6 faces) = 0.'},
+  {id:'proba_1',cat:'proba',term:'Probabilité = 1',def:'L\'événement est <b>certain</b>, il se produit <b>toujours</b>.',ex:'P(obtenir ≤ 6 sur un dé à 6 faces) = 1.'},
+  {id:'equiprob',cat:'proba',term:'Équiprobable',def:'Chaque issue a la <b>même probabilité</b> de se réaliser.',ex:'Dé non truqué : P = 1/6 pour chaque face.'},
+  {id:'formule',cat:'proba',term:'Formule P(A)',def:'<b>P(A) = nb issues favorables ÷ nb total d\'issues</b>.',ex:'Dé, A = pair : P(A) = 3/6 = 1/2.'},
+  {id:'contraire_def',cat:'contraire',term:'Ā (« A barre »)',def:'Événement qui <b>ne se réalise que lorsque A ne se réalise pas</b>.',ex:'A = pair → Ā = impair.'},
+  {id:'prop_contraire',cat:'contraire',term:'Propriété',def:'<b>P(A) + P(Ā) = 1</b>, donc P(Ā) = 1 − P(A).',ex:'Si P(A)=0,3 alors P(Ā)=0,7.'},
+];
+
+function rProbaFiche(){
+  const secs=[
+    {cat:PROBA_CATS[0],cards:PROBA_CARDS.filter(c=>c.cat==='vocab')},
+    {cat:PROBA_CATS[1],cards:PROBA_CARDS.filter(c=>c.cat==='proba'),formula:true},
+    {cat:PROBA_CATS[2],cards:PROBA_CARDS.filter(c=>c.cat==='contraire'),prop:true},
+  ];
+  return `<div style='padding:0 4px'>
+  <div style='background:#1a1a2e;border-radius:10px;padding:.9rem 1rem;text-align:center;margin-bottom:.8rem'>
+    <div style='color:#fff;font-weight:800;font-size:1.2rem'>🎲 Les Probabilités</div>
+    <div style='color:#aed6f1;font-size:.85rem;margin-top:3px'>Mathématiques · 4ème · Chapitre 12</div>
+  </div>
+  ${secs.map(s=>`
+  <div style='margin-bottom:.9rem;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)'>
+    <div style='background:${s.cat.color};padding:9px 14px;color:#fff;font-weight:700;font-size:.95rem'>${s.cat.title}</div>
+    <div style='background:#fff'>
+      ${s.cards.map(c=>`
+      <div style='display:flex;border-bottom:1px solid #eee'>
+        <div style='min-width:130px;max-width:130px;background:${s.cat.light};color:${s.cat.color};font-weight:700;font-size:.9rem;padding:12px 8px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.3'>${c.term}</div>
+        <div style='flex:1;padding:10px 12px'>
+          <div style='font-size:.95rem;color:#2c3e50;line-height:1.6'>${c.def}</div>
+          ${c.ex?`<div style='margin-top:5px;font-style:italic;font-size:.88rem;color:#1a3a5c;background:#f4f6f7;border-left:3px solid ${s.cat.color};padding:4px 8px;border-radius:0 4px 4px 0'><b>Ex :</b> ${c.ex}</div>`:''}
+        </div>
+      </div>`).join('')}
+    </div>
+    ${s.formula?`<div style='background:#eaf2ff;border:2px solid #2471a3;border-radius:0 0 8px 8px;padding:12px;text-align:center;font-weight:700;font-size:1rem;color:#2471a3'>P(A) = nombre d'issues favorables ÷ nombre total d'issues</div>`:''}
+    ${s.prop?`<div style='background:#d5f5e3;border:2px solid #1e8449;border-radius:0 0 8px 8px;padding:12px;text-align:center;font-weight:700;font-size:.97rem;color:#1e8449'>Propriété : P(A) + P(Ā) = 1 &nbsp;⟺&nbsp; P(Ā) = 1 − P(A)</div>`:''}
+  </div>`).join('')}
+  </div>`;
+}
+
+// ── Quizlet Probabilités (état) ──
+let pbMode='fc',pbSerieN=10,pbDeck=[],pbIdx=0,pbFlipped=false;
+let pbSc=0,pbTot=0,pbReview=new Set();
+
+function pbShuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]]}return b;}
+function pbPool(){const s=pbShuffle(PROBA_CARDS);return pbSerieN>0?s.slice(0,pbSerieN):s;}
+function pbBuild(){pbDeck=pbPool();pbIdx=0;pbFlipped=false;pbSc=0;pbTot=0;}
+
+function pbSetSerie(n){pbSerieN=n;pbBuild();pbRender();}
+function pbSetMode(m){pbMode=m;pbBuild();pbRender();}
+
+function pbMakeChoices(c){const p=pbShuffle(PROBA_CARDS.filter(x=>x.id!==c.id)).slice(0,3).map(x=>x.term);return pbShuffle([c.term,...p]);}
+
+function pbRender(){
+  const app=document.getElementById('pb-app');if(!app)return;
+  if(!pbDeck.length){pbBuild();}
+  if(pbIdx>=pbDeck.length){pbDone();return;}
+  const c=pbDeck[pbIdx];const pct=pbDeck.length?Math.round(pbIdx/pbDeck.length*100):0;
+  const sB=[5,10,[0,'Tout']].map(o=>{const v=Array.isArray(o)?o[0]:o;const l=Array.isArray(o)?o[1]:o;return`<button onclick='pbSetSerie(${v})' style='padding:.2rem .6rem;border-radius:8px;border:1.5px solid #9b59b6;background:${pbSerieN===v?'#9b59b6':'transparent'};color:${pbSerieN===v?'#fff':'#9b59b6'};font-size:.75rem;font-weight:700;cursor:pointer'>${l}</button>`;}).join('');
+  if(pbMode==='fc'){
+    const starred=pbReview.has(c.id);
+    app.innerHTML=`<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:6px'>
+      <span style='font-size:.85rem;color:#666;font-weight:600'>${pbIdx+1}/${pbDeck.length}</span>
+      <span>
+        <button onclick='pbToggleStar()' style='background:none;border:none;font-size:1.3em;cursor:pointer'>${starred?'⭐':'☆'}</button>
+        ${pbReview.size>0?`<button onclick='pbStartReview()' style='background:#f39c12;color:#fff;border:none;border-radius:16px;padding:3px 10px;font-size:.8rem;font-weight:700;cursor:pointer'>⭐ ${pbReview.size}</button>`:''}
+      </span></div>
+    <div style='background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.1);min-height:180px;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;cursor:pointer;margin-bottom:10px' onclick='pbFlip()'>
+      <div>
+        <div style='font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9b59b6;margin-bottom:8px'>${pbFlipped?'Définition':'Terme'}</div>
+        <div style='font-size:1.15rem;font-weight:700;color:#1a1a2e;line-height:1.4'>${pbFlipped?c.def:c.term}</div>
+        ${pbFlipped&&c.ex?`<div style='margin-top:10px;font-style:italic;font-size:.9rem;color:#555'>Ex : ${c.ex}</div>`:''}
+        ${!pbFlipped?'<div style="font-size:.75rem;color:#aaa;margin-top:12px">Touchez pour retourner</div>':''}
+      </div>
+    </div>
+    <div style='height:4px;background:#eee;border-radius:2px;margin-bottom:10px'><div style='height:100%;border-radius:2px;background:#9b59b6;width:${pct}%;transition:.3s'></div></div>
+    <div style='display:flex;gap:8px;justify-content:center;flex-wrap:wrap'>
+      <button onclick='pbNav(-1)' ${pbIdx===0?'disabled':''} style='padding:8px 16px;border-radius:10px;border:none;background:#aaa;color:#fff;font-weight:700;cursor:pointer'>◀</button>
+      <button onclick='pbFlip()' style='padding:8px 16px;border-radius:10px;border:none;background:#2471a3;color:#fff;font-weight:700;cursor:pointer'>🔄 Retourner</button>
+      <button onclick='pbNav(1)' ${pbIdx===pbDeck.length-1?'disabled':''} style='padding:8px 16px;border-radius:10px;border:none;background:#9b59b6;color:#fff;font-weight:700;cursor:pointer'>▶</button>
+    </div>`;
+  } else {
+    const choices=pbMakeChoices(c);
+    app.innerHTML=`<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:6px'>
+      <span style='font-size:.85rem;color:#666;font-weight:600'>${pbIdx+1}/${pbDeck.length}</span>
+      ${pbReview.size>0?`<button onclick='pbStartReview()' style='background:#f39c12;color:#fff;border:none;border-radius:16px;padding:3px 10px;font-size:.8rem;font-weight:700;cursor:pointer'>⭐ ${pbReview.size}</button>`:''}
+    </div>
+    <div style='background:#fff;border-radius:10px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.08)'>
+      <div style='font-size:.7rem;font-weight:700;text-transform:uppercase;color:#999;margin-bottom:6px'>Quel est ce terme ?</div>
+      <div style='font-size:1.05rem;font-weight:600;color:#1a1a2e;line-height:1.5'>${c.def}${c.ex?`<br><em style='font-size:.88rem;color:#666'>Ex : ${c.ex}</em>`:''}</div>
+    </div>
+    <div style='display:flex;flex-direction:column;gap:7px'>
+      ${choices.map(ch=>`<button onclick='pbAns(this,"${ch.replace(/"/g,'&quot;').replace(/'/g,"\\'")}","${c.term.replace(/"/g,'&quot;').replace(/'/g,"\\'")}","${c.id}")' style='padding:10px 14px;border-radius:10px;border:2px solid #ddd;background:#fff;font-size:.97em;cursor:pointer;text-align:left;font-family:inherit'>${ch}</button>`).join('')}
+    </div>
+    <button id='pb-next' onclick='pbNext()' style='margin-top:10px;padding:9px 20px;border-radius:10px;border:none;background:#9b59b6;color:#fff;font-weight:700;font-size:.95em;cursor:pointer;opacity:0' disabled>Suivant ▶</button>`;
+  }
+}
+
+function pbFlip(){pbFlipped=!pbFlipped;pbRender();}
+function pbNav(d){pbIdx=Math.max(0,Math.min(pbDeck.length-1,pbIdx+d));pbFlipped=false;pbRender();}
+function pbToggleStar(){const c=pbDeck[pbIdx];pbReview.has(c.id)?pbReview.delete(c.id):pbReview.add(c.id);pbRender();}
+function pbStartReview(){pbDeck=pbShuffle(PROBA_CARDS.filter(c=>pbReview.has(c.id)));pbIdx=0;pbFlipped=false;pbRender();}
+function pbAns(btn,chosen,correct,cid){
+  document.querySelectorAll('#pb-app button.choice,#pb-app button').forEach(b=>{if(b.style.border&&b.style.border.includes('ddd'))b.disabled=true;});
+  document.querySelectorAll('#pb-app button').forEach(b=>{if(b.textContent===correct&&b.style.border){b.style.background='#d5f5e3';b.style.borderColor='#1e8449';b.style.color='#1e8449';}});
+  if(chosen===correct){btn.style.background='#d5f5e3';btn.style.borderColor='#1e8449';btn.style.color='#1e8449';pbSc++;}
+  else{btn.style.background='#fadbd8';btn.style.borderColor='#b03a2e';btn.style.color='#b03a2e';pbReview.add(cid);}
+  pbTot++;const nb=document.getElementById('pb-next');nb.style.opacity='1';nb.disabled=false;
+}
+function pbNext(){pbIdx++;pbRender();}
+function pbDone(){const pct=pbTot?Math.round(pbSc/pbTot*100):0;const app=document.getElementById('pb-app');if(!app)return;
+  app.innerHTML=`<div style='background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.12);padding:2rem;text-align:center'>
+  <div style='font-size:2.5rem'>${pct>=80?'🌟':pct>=60?'👍':'💪'}</div>
+  <div style='font-size:1.2rem;font-weight:700;margin:.4rem 0'>Terminé !</div>
+  <div style='font-size:2rem;font-weight:800;color:${pct>=60?'#27ae60':'#c0392b'}'>${pbMode==='fc'?pbDeck.length+' vues':pbSc+'/'+pbTot}</div>
+  ${pbMode==='qcm'?`<div style='color:#777;margin:.3rem 0'>${pct}% de bonnes réponses</div>`:''}
+  <div style='display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap'>
+    <button onclick='pbBuild();pbRender()' style='padding:.5rem 1.2rem;border-radius:14px;border:none;background:#444;color:#fff;cursor:pointer;font-weight:600'>🔄 Nouvelle série</button>
+    ${pbReview.size>0?`<button onclick='pbStartReview()' style='padding:.5rem 1.2rem;border-radius:14px;border:none;background:#f39c12;color:#fff;cursor:pointer;font-weight:600'>🔁 Réviser les erreurs (${pbReview.size})</button>`:''}
+  </div></div>`;}
+
+function rProbaQuizlet(){
+  pbBuild();
+  const sB=[5,10,[0,'Tout']].map(o=>{const v=Array.isArray(o)?o[0]:o;const l=Array.isArray(o)?o[1]:o;return`<button onclick='pbSetSerie(${v})' style='padding:.25rem .7rem;border-radius:10px;border:2px solid #9b59b6;background:${pbSerieN===v?'#9b59b6':'transparent'};color:${pbSerieN===v?'#fff':'#9b59b6'};font-size:.78rem;font-weight:600;cursor:pointer'>${l}</button>`;}).join('');
+  return `<div style='padding:0 6px'>
+  <div style='background:#1a1a2e;color:#fff;border-radius:10px;padding:.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem'>
+    <span style='font-weight:700'>🎲 Probabilités</span>
+    <span style='color:#aed6f1;font-size:.8rem'>Maths · 4ème</span>
+  </div>
+  <div style='display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.5rem .8rem;margin-bottom:.5rem'>
+    <button onclick='pbSetMode("fc")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #9b59b6;background:${pbMode==="fc"?'#9b59b6':'transparent'};color:${pbMode==="fc"?'#fff':'#9b59b6'};font-size:.82rem;font-weight:600;cursor:pointer'>🃏 Flashcards</button>
+    <button onclick='pbSetMode("qcm")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #9b59b6;background:${pbMode==="qcm"?'#9b59b6':'transparent'};color:${pbMode==="qcm"?'#fff':'#9b59b6'};font-size:.82rem;font-weight:600;cursor:pointer'>🎯 QCM</button>
+  </div>
+  <div style='display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.4rem .8rem;margin-bottom:.5rem'>
+    <span style='font-size:.78rem;color:#999;font-weight:700'>Série :</span>${sB}
+  </div>
+  <div id='pb-app'></div></div>`;}
+
+/* ══ AUSSIE EXPERIENCE DATA ══ */
+const AUSSIE_CATS=[
+  {id:'activities',emoji:'🏄',label:'Activities & Sports',color:'#2471a3',light:'#d6eaf8'},
+  {id:'animals',  emoji:'🦘',label:'Australian Animals',  color:'#1e8449',light:'#d5f5e3'},
+  {id:'general',  emoji:'📝',label:'General Vocabulary',  color:'#ca6702',light:'#fef3e0'},
+];
+const AUSSIE_CARDS=[
+  {id:'a1',cat:'activities',en:'climb a bridge',          fr:"escalader un pont"},
+  {id:'a2',cat:'activities',en:'go hiking',               fr:"faire de la randonnée"},
+  {id:'a3',cat:'activities',en:'go snorkelling',          fr:"faire de la plongée en apnée"},
+  {id:'a4',cat:'activities',en:'go whale spotting',       fr:"aller observer les baleines"},
+  {id:'a5',cat:'activities',en:'go rock climbing',        fr:"faire de l'escalade"},
+  {id:'a6',cat:'activities',en:'go surfing',              fr:"faire du surf"},
+  {id:'a7',cat:'activities',en:'scuba diving',            fr:"la plongée sous-marine"},
+  {id:'a8',cat:'activities',en:'explore beaches',         fr:"explorer les plages"},
+  {id:'a9',cat:'activities',en:'see the Southern Lights', fr:"voir les aurores australes"},
+  {id:'a10',cat:'activities',en:"go to rainforests & rivers",fr:"aller dans les forêts tropicales et les rivières"},
+  {id:'a11',cat:'activities',en:'see turtles and crocodiles',fr:"voir les tortues et les crocodiles"},
+  {id:'a12',cat:'activities',en:'take selfies with wildlife',fr:"se prendre en selfie avec la faune sauvage"},
+  {id:'b1',cat:'animals',en:'a dingo',           fr:"un dingo"},
+  {id:'b2',cat:'animals',en:'a kangaroo',        fr:"un kangourou"},
+  {id:'b3',cat:'animals',en:'a platypus',        fr:"un ornithorynque"},
+  {id:'b4',cat:'animals',en:'a Tasmanian devil', fr:"un diable de Tasmanie"},
+  {id:'b5',cat:'animals',en:'a green sea turtle',fr:"une tortue verte"},
+  {id:'b6',cat:'animals',en:'a fallow deer',     fr:"un daim"},
+  {id:'b7',cat:'animals',en:'a rabbit',          fr:"un lapin"},
+  {id:'b8',cat:'animals',en:'a dolphin',         fr:"un dauphin"},
+  {id:'b9',cat:'animals',en:'a camel',           fr:"un chameau"},
+  {id:'c1',cat:'general',en:'less known',             fr:"moins connu(e)"},
+  {id:'c2',cat:'general',en:'dangerous',              fr:"dangereux / dangereuse"},
+  {id:'c3',cat:'general',en:'world-famous',           fr:"célèbre dans le monde entier"},
+  {id:'c4',cat:'general',en:'abroad',                 fr:"à l'étranger"},
+  {id:'c5',cat:'general',en:'sunscreen',              fr:"la crème solaire"},
+  {id:'c6',cat:'general',en:'a waterfall',            fr:"une cascade"},
+  {id:'c7',cat:'general',en:'a harbour',              fr:"un port"},
+  {id:'c8',cat:'general',en:'a website',              fr:"un site internet"},
+  {id:'c9',cat:'general',en:'a trip',                 fr:"un voyage"},
+  {id:'c10',cat:'general',en:'advice',                fr:"un conseil"},
+  {id:'c11',cat:'general',en:'to summarize',          fr:"résumer"},
+  {id:'c12',cat:'general',en:'to discuss',            fr:"discuter"},
+  {id:'c13',cat:'general',en:'unique',                fr:"unique"},
+  {id:'c14',cat:'general',en:'extraordinary',         fr:"extraordinaire"},
+  {id:'c15',cat:'general',en:'a wonderful experience',fr:"une expérience merveilleuse"},
+  {id:'c16',cat:'general',en:'to discover',           fr:"découvrir"},
+  {id:'c17',cat:'general',en:'a connection',          fr:"une connexion"},
+  {id:'c18',cat:'general',en:'an opal',               fr:"une opale"},
+];
+
+/* ── Renderers Aussie ── */
+function rAussieFiche(){
+  const catHtml=AUSSIE_CATS.map(cat=>{
+    const cards=AUSSIE_CARDS.filter(c=>c.cat===cat.id);
+    const rows=cards.map((c,i)=>`<tr style="${i%2?'background:#f9faff':''}">
+      <td style="font-weight:700;color:${cat.color};padding:8px 10px">${c.en}</td>
+      <td style="padding:8px 10px">${c.fr}</td></tr>`).join('');
+    return `<div style="margin:0 16px 16px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+      <div style="background:${cat.color};color:#fff;padding:11px 14px;display:flex;align-items:center;gap:8px">
+        <span style="font-size:1.2em">${cat.emoji}</span>
+        <span style="font-weight:700;font-size:.95em">${cat.label}</span>
+        <span style="margin-left:auto;font-size:.75em;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:12px">${cards.length} mots</span>
+      </div>
+      <table style="width:100%;border-collapse:collapse;background:#fff;font-size:.88em">
+        <thead style="background:${cat.color}"><tr>
+          <th style="padding:7px 10px;text-align:left;color:#fff;font-size:.85em">🇬🇧 English</th>
+          <th style="padding:7px 10px;text-align:left;color:#fff;font-size:.85em">🇫🇷 Français</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;}).join('');
+  return `<div style="background:#1a1a2e;color:#fff;border-radius:10px;padding:.8rem 1rem;margin:0 16px 14px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-weight:700">🇦🇺 The Aussie Experience</span>
+    <span style="color:#aed6f1;font-size:.8rem">Anglais · 4ème</span>
+  </div>${catHtml}`;}
+
+/* ── Aussie Quizlet state ── */
+let auMode='fc',auDir='en-fr',auSN=10,auDk=[],auIdx=0,auFl=false,auSc=0,auTot=0;
+let auReview=new Set();
+function auShuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]]}return b;}
+function auQ(c){return auDir==='en-fr'?c.en:c.fr;}
+function auA(c){return auDir==='en-fr'?c.fr:c.en;}
+function auPool(){const s=auShuffle(AUSSIE_CARDS);return auSN>0?s.slice(0,auSN):s;}
+function auBuild(){auDk=auPool();auIdx=0;auFl=false;auSc=0;auTot=0;}
+function auSetMode(m){auMode=m;auBuild();auRender();}
+function auSetDir(d){auDir=d;auBuild();auRender();}
+function auSetSerie(n){auSN=n;auBuild();auRender();}
+function auMakeChoices(c){return auShuffle([c,...auShuffle(AUSSIE_CARDS.filter(x=>x.id!==c.id)).slice(0,3)]);}
+
+function auRender(){
+  const app=document.getElementById('au-app');if(!app)return;
+  if(!auDk.length){auBuild();}
+  if(auIdx>=auDk.length){auDone();return;}
+  const c=auDk[auIdx];const pct=auDk.length?Math.round(auIdx/auDk.length*100):0;
+  const sB=[5,10,[0,'Tout']].map(o=>{const v=Array.isArray(o)?o[0]:o;const l=Array.isArray(o)?o[1]:o;return`<button onclick='auSetSerie(${v})' style='padding:.2rem .6rem;border-radius:8px;border:1.5px solid #2471a3;background:${auSN===v?'#2471a3':'transparent'};color:${auSN===v?'#fff':'#2471a3'};font-size:.75rem;font-weight:700;cursor:pointer'>${l}</button>`;}).join('');
+  const lQ=auDir==='en-fr'?'🇬🇧 English':'🇫🇷 Français';
+  const lA=auDir==='en-fr'?'🇫🇷 Français':'🇬🇧 English';
+  if(auMode==='fc'){
+    const starred=auReview.has(c.id);
+    app.innerHTML=`
+    <div style='display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.4rem .8rem;margin-bottom:.5rem'>
+      <span style='font-size:.78rem;color:#999;font-weight:700'>Série :</span>${sB}
+    </div>
+    <div style='display:flex;gap:.3rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.4rem .8rem;margin-bottom:.5rem'>
+      <button onclick='auSetDir("en-fr")' style='padding:.25rem .7rem;border-radius:10px;border:1.5px solid #2471a3;background:${auDir==="en-fr"?'#2471a3':'transparent'};color:${auDir==="en-fr"?'#fff':'#2471a3'};font-size:.75rem;font-weight:600;cursor:pointer'>EN → FR</button>
+      <button onclick='auSetDir("fr-en")' style='padding:.25rem .7rem;border-radius:10px;border:1.5px solid #2471a3;background:${auDir==="fr-en"?'#2471a3':'transparent'};color:${auDir==="fr-en"?'#fff':'#2471a3'};font-size:.75rem;font-weight:600;cursor:pointer'>FR → EN</button>
+    </div>
+    <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem'>
+      <span style='font-size:.85rem;color:#666;font-weight:600'>${auIdx+1}/${auDk.length}</span>
+      <div style='display:flex;gap:.3rem'>
+        <button onclick='auToggleStar()' style='background:none;border:none;font-size:1.3em;cursor:pointer'>${starred?'⭐':'☆'}</button>
+        ${auReview.size>0?`<button onclick='auStartReview()' style='background:#f39c12;color:#fff;border:none;border-radius:16px;padding:3px 10px;font-size:.8rem;font-weight:700;cursor:pointer'>⭐ ${auReview.size}</button>`:''}
+      </div></div>
+    <div style='background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.1);min-height:180px;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;cursor:pointer;margin-bottom:10px' onclick='auFlip()'>
+      <div>
+        <div style='font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#2471a3;margin-bottom:8px'>${auFl?lA:lQ}</div>
+        <div style='font-size:1.15rem;font-weight:700;color:#1a1a2e;line-height:1.4'>${auFl?auA(c):auQ(c)}</div>
+        ${!auFl?'<div style="font-size:.75rem;color:#aaa;margin-top:12px">Touchez pour retourner</div>':''}
+      </div></div>
+    <div style='display:flex;gap:.4rem;justify-content:center;margin-bottom:.5rem'>
+      <button onclick='auNav(-1)' ${auIdx===0?'disabled':''} style='padding:8px 16px;border-radius:10px;border:none;background:#aaa;color:#fff;font-weight:700;cursor:pointer'>◀</button>
+      <button onclick='auFlip()' style='padding:8px 16px;border-radius:10px;border:none;background:#2471a3;color:#fff;font-weight:700;cursor:pointer'>🔄 Retourner</button>
+      <button onclick='auNav(1)' ${auIdx===auDk.length-1?'disabled':''} style='padding:8px 16px;border-radius:10px;border:none;background:#2471a3;color:#fff;font-weight:700;cursor:pointer'>▶</button>
+    </div>
+    <div style='height:5px;background:#e0e4f0;border-radius:3px;overflow:hidden;margin-bottom:.4rem'>
+      <div style='height:100%;background:#2471a3;width:${pct}%;transition:width .3s'></div></div>
+    ${auReview.size>0?`<div style='text-align:center;margin-top:4px'><button onclick='auStartReview()' style='background:#f39c12;color:#fff;border:none;border-radius:16px;padding:4px 12px;font-size:.8em;font-weight:700;cursor:pointer'>🔁 Réviser les étoiles (${auReview.size})</button></div>`:''}`;
+  } else {
+    const choices=auMakeChoices(c);
+    app.innerHTML=`
+    <div style='display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.4rem .8rem;margin-bottom:.5rem'>
+      <span style='font-size:.78rem;color:#999;font-weight:700'>Série :</span>${sB}
+    </div>
+    <div style='display:flex;gap:.3rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.4rem .8rem;margin-bottom:.5rem'>
+      <button onclick='auSetDir("en-fr")' style='padding:.25rem .7rem;border-radius:10px;border:1.5px solid #2471a3;background:${auDir==="en-fr"?'#2471a3':'transparent'};color:${auDir==="en-fr"?'#fff':'#2471a3'};font-size:.75rem;font-weight:600;cursor:pointer'>EN → FR</button>
+      <button onclick='auSetDir("fr-en")' style='padding:.25rem .7rem;border-radius:10px;border:1.5px solid #2471a3;background:${auDir==="fr-en"?'#2471a3':'transparent'};color:${auDir==="fr-en"?'#fff':'#2471a3'};font-size:.75rem;font-weight:600;cursor:pointer'>FR → EN</button>
+    </div>
+    <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem'>
+      <span style='font-size:.85rem;color:#666;font-weight:600'>Score : ${auSc}/${auTot}</span>
+      ${auReview.size>0?`<button onclick='auStartReview()' style='background:#f39c12;color:#fff;border:none;border-radius:16px;padding:3px 10px;font-size:.8rem;font-weight:700;cursor:pointer'>🔁 Réviser (${auReview.size})</button>`:''}
+    </div>
+    <div style='background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:18px;margin-bottom:12px;text-align:center'>
+      <div style='font-size:.7rem;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px'>${lQ}</div>
+      <div style='font-size:1.4rem;font-weight:700;color:#1a1a2e'>${auQ(c)}</div>
+    </div>
+    <div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px'>
+      ${choices.map(ch=>`<button onclick='auAns(this,"${auA(ch).replace(/"/g,'&quot;').replace(/'/g,"\\'")}","${auA(c).replace(/"/g,'&quot;').replace(/'/g,"\\'")}","${c.id}")' style='padding:11px 8px;background:#fff;border:2px solid #e8eaf0;border-radius:10px;font-size:.9em;cursor:pointer;font-weight:600;color:#333;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.05)'>${auA(ch)}</button>`).join('')}
+    </div>
+    <div id='au-fb' style='text-align:center;min-height:22px;font-size:.9em;font-weight:600;margin-bottom:8px'></div>
+    <button id='au-next' onclick='auNext()' style='display:block;width:100%;padding:11px;background:#2471a3;color:#fff;border:none;border-radius:10px;font-size:.93em;cursor:pointer;font-weight:600;opacity:0' disabled>Question suivante →</button>`;
+  }
+}
+function auFlip(){auFl=!auFl;auRender();}
+function auNav(d){auIdx=Math.max(0,Math.min(auDk.length-1,auIdx+d));auFl=false;auRender();}
+function auToggleStar(){const c=auDk[auIdx];auReview.has(c.id)?auReview.delete(c.id):auReview.add(c.id);auRender();}
+function auStartReview(){auDk=auShuffle(AUSSIE_CARDS.filter(c=>auReview.has(c.id)));auIdx=0;auFl=false;auRender();}
+function auAns(btn,chosen,correct,cid){
+  if(!document.getElementById('au-next').disabled)return;
+  auTot++;document.querySelectorAll('[onclick^="auAns"]').forEach(b=>{b.disabled=true;b.style.cursor='default';});
+  const ok=chosen===correct;
+  if(ok){btn.style.background='#d4edda';btn.style.borderColor='#28a745';btn.style.color='#155724';auSc++;document.getElementById('au-fb').innerHTML='<span style="color:#28a745">✅ Bravo !</span>';}
+  else{btn.style.background='#f8d7da';btn.style.borderColor='#dc3545';btn.style.color='#721c24';
+    document.querySelectorAll('[onclick^="auAns"]').forEach(b=>{if(b.textContent.trim()===correct){b.style.background='#d4edda';b.style.borderColor='#28a745';b.style.color='#155724';}});
+    document.getElementById('au-fb').innerHTML=`<span style="color:#dc3545">❌ ${correct}</span>`;
+    auReview.add(AUSSIE_CARDS.find(c=>c.id===cid)||{id:cid});}
+  const nx=document.getElementById('au-next');if(nx){nx.disabled=false;nx.style.opacity='1';}
+}
+function auNext(){auIdx++;auRender();}
+function auDone(){const pct=auTot?Math.round(auSc/auTot*100):0;const app=document.getElementById('au-app');if(!app)return;
+  app.innerHTML=`<div style='background:#fff;border-radius:14px;padding:24px 18px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.1)'>
+    <div style='font-size:2.5rem;font-weight:800;color:${pct>=60?'#27ae60':'#c0392b'}'>${auMode==='fc'?auDk.length+' vues':pct+'%'}</div>
+    ${auMode==='qcm'?`<div style='color:#777;margin:.3rem 0'>${auSc}/${auTot} bonnes réponses</div>`:''}
+    <div style='display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap'>
+      <button onclick='auBuild();auRender()' style='padding:.5rem 1.2rem;border-radius:14px;border:none;background:#444;color:#fff;cursor:pointer;font-weight:600'>🔄 Nouvelle série</button>
+      ${auReview.size>0?`<button onclick='auStartReview()' style='padding:.5rem 1.2rem;border-radius:14px;border:none;background:#f39c12;color:#fff;cursor:pointer;font-weight:600'>🔁 Réviser les erreurs (${auReview.size})</button>`:''}
+    </div></div>`;}
+
+function rAussieQuizlet(){
+  auBuild();
+  const sB=[5,10,[0,'Tout']].map(o=>{const v=Array.isArray(o)?o[0]:o;const l=Array.isArray(o)?o[1]:o;return`<button onclick='auSetSerie(${v})' style='padding:.25rem .7rem;border-radius:10px;border:2px solid #2471a3;background:${auSN===v?'#2471a3':'transparent'};color:${auSN===v?'#fff':'#2471a3'};font-size:.78rem;font-weight:600;cursor:pointer'>${l}</button>`;}).join('');
+  return `<div style='padding:0 6px'>
+  <div style='background:#1a1a2e;color:#fff;border-radius:10px;padding:.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem'>
+    <span style='font-weight:700'>🇦🇺 The Aussie Experience</span>
+    <span style='color:#aed6f1;font-size:.8rem'>Anglais · 4ème</span>
+  </div>
+  <div style='display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.5rem .8rem;margin-bottom:.5rem'>
+    <button onclick='auSetMode("fc")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #2471a3;background:${auMode==="fc"?'#2471a3':'transparent'};color:${auMode==="fc"?'#fff':'#2471a3'};font-size:.82rem;font-weight:600;cursor:pointer'>🃏 Flashcards</button>
+    <button onclick='auSetMode("qcm")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #2471a3;background:${auMode==="qcm"?'#2471a3':'transparent'};color:${auMode==="qcm"?'#fff':'#2471a3'};font-size:.82rem;font-weight:600;cursor:pointer'>🎯 QCM</button>
+  </div>
+  <div id='au-app'></div></div>`;}
+
+/* ══ HISTOIRE-GÉO DATA ══ */
+const MIGR_VOCAB=[
+  {id:'v1', q:"Un migrant",                     a:"Une personne qui quitte son pays ou sa région pour s'installer ailleurs."},
+  {id:'v2', q:"Un pôle migratoire",             a:"Une région de départ ou d'arrivée des migrants."},
+  {id:'v3', q:"Un flux migratoire",             a:"Le mouvement de migrants d'une région vers une autre."},
+  {id:'v4', q:"Une zone de départ",             a:"Région d'où partent les migrants (pays pauvres ou en conflit)."},
+  {id:'v5', q:"Une région d'arrivée",           a:"Région où arrivent les migrants (pays riches ou stables)."},
+  {id:'v6', q:"Le renforcement des frontières", a:"Rendre les frontières plus difficiles à franchir (murs, contrôles)."},
+  {id:'v7', q:"Un réfugié",                     a:"Personne contrainte de fuir son pays à cause d'un conflit ou d'une persécution."},
+  {id:'v8', q:"Un migrant économique",          a:"Personne qui migre pour améliorer ses conditions de vie (travail, salaire)."},
+  {id:'v9', q:"Un croquis",                     a:"Représentation cartographique simplifiée d'un phénomène géographique."},
+  {id:'v10',q:"Un planisphère",                 a:"Carte représentant la totalité du globe terrestre sur un plan."},
+  {id:'d1', q:"Afrique de l'Ouest — pourquoi zone de départ ?",  a:"Pauvreté, instabilité politique."},
+  {id:'d2', q:"Maghreb — pourquoi zone de départ ?",             a:"Chômage, conflits régionaux."},
+  {id:'d3', q:"Mexique / Amérique Centrale — raison de départ ?",a:"Pauvreté, violence des cartels."},
+  {id:'d4', q:"Moyen-Orient — raison de départ ?",               a:"Conflits armés (Syrie, Irak...)."},
+  {id:'d5', q:"Sous-continent Indien — raison de départ ?",      a:"Surpopulation, pauvreté."},
+  {id:'a1', q:"Europe Occidentale — pourquoi région d'arrivée ?",a:"Richesse, stabilité, droits sociaux."},
+  {id:'a2', q:"Amérique du Nord — pourquoi région d'arrivée ?",  a:"Économie puissante, emplois disponibles."},
+  {id:'a3', q:"Péninsule Arabique — pourquoi région d'arrivée ?",a:"Besoins importants en main-d'œuvre."},
+  {id:'a4', q:"Australie — pourquoi région d'arrivée ?",         a:"Emploi, qualité de vie élevée."},
+  {id:'e1', q:"Effets des migrations pour les pays d'arrivée ?", a:"Main-d'œuvre disponible, diversité culturelle, tensions sociales, renforcement des frontières."},
+  {id:'e2', q:"Effets des migrations pour les pays de départ ?", a:"Envoi d'argent aux familles, mais perte de population active (fuite des cerveaux)."},
+  {id:'e3', q:"Différence réfugié / migrant économique ?",       a:"Le réfugié fuit un conflit. Le migrant économique part améliorer ses conditions de vie."},
+];
+
+function rMigrFiche(){
+  const sec=(emoji,title,color,rows,cols)=>`
+    <div style="margin:0 0 14px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+      <div style="background:${color};color:#fff;padding:10px 14px;display:flex;align-items:center;gap:7px">
+        <span style="font-size:1.1em">${emoji}</span>
+        <span style="font-weight:700;font-size:.92em">${title}</span>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:.86em;background:#fff">
+        <thead style="background:${color}"><tr>${cols.map(c=>`<th style="padding:7px 10px;text-align:left;color:#fff;font-size:.85em">${c}</th>`).join('')}</tr></thead>
+        <tbody>${rows.map((r,i)=>`<tr style="${i%2?'':'background:'+color+'18'}">
+          <td style="padding:8px 10px;font-weight:700;color:${color}">${r[0]}</td>
+          <td style="padding:8px 10px">${r[1]}</td></tr>`).join('')}</tbody>
+      </table></div>`;
+
+  const effets=[
+    {t:"Pour les pays d'arrivée",    c:'#1a5276',items:["Main-d'œuvre disponible","Diversité culturelle","Tensions sociales possibles","Renforcement des frontières"]},
+    {t:"Pour les pays de départ",    c:'#c0392b',items:["Envoi d'argent aux familles (remises)","Perte de population active","Réduction de la surpopulation"]},
+    {t:"Pour les migrants",          c:'#ca6702',items:["Meilleures conditions de vie (souvent)","Voyage dangereux","Difficultés d'intégration","Parfois refus d'entrée"]},
+  ];
+  const steps=[
+    ["Étape 1","Prélève les informations : repère cercles (pôles), flèches (flux), triangles (frontières)."],
+    ["Étape 2","Organise la légende : 1. Espaces des migrations / 2. Flux et effets."],
+    ["Étape 3","Complète le croquis : colorie, trace, ajoute un titre."],
+    ["Étape 4","Rédige : décris les flux, les pôles, les causes et les effets."],
+  ];
+
+  return `<div style="background:#1a1a2e;color:#fff;border-radius:10px;padding:.75rem 1rem;margin:0 16px 14px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-weight:700">🌍 Un monde de migrants</span>
+    <span style="color:#f0c040;font-size:.8rem">Géo · Ch.11</span>
+  </div>
+  <div style="padding:0 16px">
+  ${sec('📖','Vocabulaire essentiel','#c0392b',
+    MIGR_VOCAB.slice(0,10).map(c=>[c.q,c.a]),
+    ['🔑 Notion','📝 Définition'])}
+  ${sec('🔴','Zones de départ','#ca6702',
+    [["Afrique de l'Ouest","Pauvreté, instabilité politique"],["Maghreb","Chômage, conflits régionaux"],["Mexique / Amérique Centrale","Pauvreté, violence des cartels"],["Sous-continent Indien","Surpopulation, pauvreté"],["Moyen-Orient","Conflits armés (Syrie, Irak...)"]],
+    ['📍 Région','💡 Causes'])}
+  ${sec('🟢','Régions d\'arrivée','#1e8449',
+    [["Europe Occidentale","Richesse, stabilité, droits"],["Amérique du Nord","Économie puissante, emploi"],["Péninsule Arabique","Besoins en main-d'œuvre"],["Australie","Emploi, cadre de vie"]],
+    ['📍 Région','💡 Attractivité'])}
+  <div style="margin-bottom:14px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+    <div style="background:#1a5276;color:#fff;padding:10px 14px;font-weight:700;font-size:.92em">⚡ Les effets des migrations</div>
+    <div style="background:#fff;padding:10px 14px">
+      ${effets.map(e=>`<div style="margin-bottom:8px;background:${e.c}18;border-radius:8px;padding:9px 12px">
+        <div style="font-weight:700;color:${e.c};font-size:.88em;margin-bottom:4px">${e.t}</div>
+        <ul style="margin:0;padding-left:14px;font-size:.85em">${e.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+      </div>`).join('')}
+    </div></div>
+  <div style="margin-bottom:14px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+    <div style="background:#6c3483;color:#fff;padding:10px 14px;font-weight:700;font-size:.92em">🗺️ Méthode — Réaliser un croquis</div>
+    <div style="background:#fff;padding:10px 14px">
+      ${steps.map(([n,c])=>`<div style="border-left:4px solid #6c3483;padding:8px 12px;margin-bottom:8px;background:#e8daef30;border-radius:0 8px 8px 0">
+        <div style="font-weight:700;color:#6c3483;font-size:.88em">${n}</div>
+        <div style="font-size:.85em;margin-top:3px">${c}</div>
+      </div>`).join('')}
+    </div></div>
+  </div>`;}
+
+/* ── Migr Quizlet state ── */
+let mgMode='fc',mgSN=10,mgDk=[],mgIdx=0,mgFl=false,mgSc=0,mgTot=0,mgReview=new Set();
+function mgSh(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]]}return b;}
+function mgPool(){const s=mgSh(MIGR_VOCAB);return mgSN>0?s.slice(0,mgSN):s;}
+function mgBuild(){mgDk=mgPool();mgIdx=0;mgFl=false;mgSc=0;mgTot=0;}
+function mgSetMode(m){mgMode=m;mgBuild();mgRender();}
+function mgSetSerie(n){mgSN=n;mgBuild();mgRender();}
+function mgChoices(c){return mgSh([c,...mgSh(MIGR_VOCAB.filter(x=>x.id!==c.id)).slice(0,3)]);}
+
+function mgRender(){
+  const app=document.getElementById('mg-app');if(!app)return;
+  if(!mgDk.length)mgBuild();
+  if(mgIdx>=mgDk.length){mgDone();return;}
+  const c=mgDk[mgIdx];const pct=mgDk.length?Math.round(mgIdx/mgDk.length*100):0;
+  const sB=[5,10,[0,'Tout']].map(o=>{const v=Array.isArray(o)?o[0]:o;const l=Array.isArray(o)?o[1]:o;return`<button onclick='mgSetSerie(${v})' style='padding:.2rem .6rem;border-radius:8px;border:1.5px solid #c0392b;background:${mgSN===v?'#c0392b':'transparent'};color:${mgSN===v?'#fff':'#c0392b'};font-size:.75rem;font-weight:700;cursor:pointer'>${l}</button>`;}).join('');
+  if(mgMode==='fc'){
+    const star=mgReview.has(c.id);
+    app.innerHTML=`
+    <div style='display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.4rem .8rem;margin-bottom:.5rem'>
+      <span style='font-size:.78rem;color:#999;font-weight:700'>Série :</span>${sB}
+    </div>
+    <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem'>
+      <span style='font-size:.85rem;color:#666;font-weight:600'>${mgIdx+1}/${mgDk.length}</span>
+      <div style='display:flex;gap:.3rem'>
+        <button onclick='mgToggleStar()' style='background:none;border:none;font-size:1.3em;cursor:pointer'>${star?'⭐':'☆'}</button>
+        ${mgReview.size>0?`<button onclick='mgStartReview()' style='background:#f39c12;color:#fff;border:none;border-radius:16px;padding:3px 10px;font-size:.8rem;font-weight:700;cursor:pointer'>⭐ ${mgReview.size}</button>`:''}
+      </div></div>
+    <div style='background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.1);min-height:170px;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;cursor:pointer;margin-bottom:10px' onclick='mgFlip()'>
+      <div>
+        <div style='font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#c0392b;margin-bottom:8px'>${mgFl?'Définition':'Notion'}</div>
+        <div style='font-size:1.1rem;font-weight:700;color:#1a1a2e;line-height:1.45'>${mgFl?c.a:c.q}</div>
+        ${!mgFl?'<div style="font-size:.75rem;color:#aaa;margin-top:10px">Touchez pour retourner</div>':''}
+      </div></div>
+    <div style='display:flex;gap:.4rem;justify-content:center;margin-bottom:.5rem'>
+      <button onclick='mgNav(-1)' ${mgIdx===0?'disabled':''} style='padding:8px 16px;border-radius:10px;border:none;background:#aaa;color:#fff;font-weight:700;cursor:pointer'>◀</button>
+      <button onclick='mgFlip()' style='padding:8px 16px;border-radius:10px;border:none;background:#c0392b;color:#fff;font-weight:700;cursor:pointer'>🔄</button>
+      <button onclick='mgNav(1)' ${mgIdx===mgDk.length-1?'disabled':''} style='padding:8px 16px;border-radius:10px;border:none;background:#c0392b;color:#fff;font-weight:700;cursor:pointer'>▶</button>
+    </div>
+    <div style='height:5px;background:#e0e4f0;border-radius:3px;overflow:hidden'>
+      <div style='height:100%;background:#c0392b;width:${pct}%;transition:width .3s'></div></div>`;
+  } else {
+    const choices=mgChoices(c);
+    app.innerHTML=`
+    <div style='display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.4rem .8rem;margin-bottom:.5rem'>
+      <span style='font-size:.78rem;color:#999;font-weight:700'>Série :</span>${sB}
+    </div>
+    <div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem'>
+      <span style='font-size:.85rem;color:#666;font-weight:600'>Score : ${mgSc}/${mgTot}</span>
+      ${mgReview.size>0?`<button onclick='mgStartReview()' style='background:#f39c12;color:#fff;border:none;border-radius:16px;padding:3px 10px;font-size:.8rem;font-weight:700;cursor:pointer'>🔁 Réviser (${mgReview.size})</button>`:''}
+    </div>
+    <div style='background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:16px;margin-bottom:12px;text-align:center'>
+      <div style='font-size:.7rem;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px'>Notion</div>
+      <div style='font-size:1.2rem;font-weight:700;color:#1a1a2e;line-height:1.4'>${c.q}</div>
+    </div>
+    <div style='display:flex;flex-direction:column;gap:8px;margin-bottom:10px'>
+      ${choices.map(ch=>`<button onclick='mgAns(this,"${ch.id}","${c.id}")' style='padding:11px 14px;background:#fff;border:2px solid #e8eaf0;border-radius:10px;font-size:.9em;cursor:pointer;color:#333;text-align:left;box-shadow:0 1px 4px rgba(0,0,0,.05)'>${ch.a}</button>`).join('')}
+    </div>
+    <div id='mg-fb' style='text-align:center;min-height:22px;font-size:.9em;font-weight:600;margin-bottom:8px'></div>
+    <button id='mg-next' onclick='mgNext()' style='display:block;width:100%;padding:11px;background:#c0392b;color:#fff;border:none;border-radius:10px;font-size:.93em;cursor:pointer;font-weight:600;opacity:0' disabled>Question suivante →</button>`;
+  }
+}
+function mgFlip(){mgFl=!mgFl;mgRender();}
+function mgNav(d){mgIdx=Math.max(0,Math.min(mgDk.length-1,mgIdx+d));mgFl=false;mgRender();}
+function mgToggleStar(){const c=mgDk[mgIdx];mgReview.has(c.id)?mgReview.delete(c.id):mgReview.add(c.id);mgRender();}
+function mgStartReview(){mgDk=mgSh(MIGR_VOCAB.filter(c=>mgReview.has(c.id)));mgIdx=0;mgFl=false;mgRender();}
+function mgAns(btn,cid,correct){
+  if(!document.getElementById('mg-next').disabled)return;
+  mgTot++;document.querySelectorAll('[onclick^="mgAns"]').forEach(b=>{b.disabled=true;b.style.cursor='default';});
+  const corr=MIGR_VOCAB.find(c=>c.id===correct);
+  if(cid===correct){btn.style.background='#d4edda';btn.style.borderColor='#28a745';btn.style.color='#155724';mgSc++;document.getElementById('mg-fb').innerHTML='<span style="color:#28a745">✅ Bravo !</span>';}
+  else{btn.style.background='#f8d7da';btn.style.borderColor='#dc3545';btn.style.color='#721c24';
+    document.querySelectorAll('[onclick^="mgAns"]').forEach(b=>{if(b.textContent.trim()===corr.a){b.style.background='#d4edda';b.style.borderColor='#28a745';b.style.color='#155724';}});
+    document.getElementById('mg-fb').innerHTML=`<span style="color:#dc3545">❌ ${corr.a.slice(0,60)}…</span>`;
+    mgReview.add(correct);}
+  const nx=document.getElementById('mg-next');if(nx){nx.disabled=false;nx.style.opacity='1';}
+}
+function mgNext(){mgIdx++;mgRender();}
+function mgDone(){const pct=mgTot?Math.round(mgSc/mgTot*100):0;const app=document.getElementById('mg-app');if(!app)return;
+  app.innerHTML=`<div style='background:#fff;border-radius:14px;padding:24px 18px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.1)'>
+    <div style='font-size:2.5rem;font-weight:800;color:${pct>=60?'#27ae60':'#c0392b'}'>${mgMode==='fc'?mgDk.length+' vues':pct+'%'}</div>
+    ${mgMode==='qcm'?`<div style='color:#777;margin:.3rem 0'>${mgSc}/${mgTot} bonnes réponses</div>`:''}
+    <div style='display:flex;gap:8px;justify-content:center;margin-top:1rem;flex-wrap:wrap'>
+      <button onclick='mgBuild();mgRender()' style='padding:.5rem 1.2rem;border-radius:14px;border:none;background:#444;color:#fff;cursor:pointer;font-weight:600'>🔄 Nouvelle série</button>
+      ${mgReview.size>0?`<button onclick='mgStartReview()' style='padding:.5rem 1.2rem;border-radius:14px;border:none;background:#f39c12;color:#fff;cursor:pointer;font-weight:600'>🔁 Réviser (${mgReview.size})</button>`:''}
+    </div></div>`;}
+
+function rMigrQuizlet(){
+  mgBuild();
+  const sB=[5,10,[0,'Tout']].map(o=>{const v=Array.isArray(o)?o[0]:o;const l=Array.isArray(o)?o[1]:o;return`<button onclick='mgSetSerie(${v})' style='padding:.25rem .7rem;border-radius:10px;border:2px solid #c0392b;background:${mgSN===v?'#c0392b':'transparent'};color:${mgSN===v?'#fff':'#c0392b'};font-size:.78rem;font-weight:600;cursor:pointer'>${l}</button>`;}).join('');
+  return `<div style='padding:0 6px'>
+  <div style='background:#1a1a2e;color:#fff;border-radius:10px;padding:.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem'>
+    <span style='font-weight:700'>🌍 Un monde de migrants</span>
+    <span style='color:#f0c040;font-size:.8rem'>Géo · Ch.11</span>
+  </div>
+  <div style='display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.5rem .8rem;margin-bottom:.5rem'>
+    <button onclick='mgSetMode("fc")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #c0392b;background:${mgMode==="fc"?'#c0392b':'transparent'};color:${mgMode==="fc"?'#fff':'#c0392b'};font-size:.82rem;font-weight:600;cursor:pointer'>🃏 Flashcards</button>
+    <button onclick='mgSetMode("qcm")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #c0392b;background:${mgMode==="qcm"?'#c0392b':'transparent'};color:${mgMode==="qcm"?'#fff':'#c0392b'};font-size:.82rem;font-weight:600;cursor:pointer'>🎯 QCM</button>
+  </div>
+  <div style='display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.4rem .8rem;margin-bottom:.5rem'>
+    <span style='font-size:.78rem;color:#999;font-weight:700'>Série :</span>${sB}
+  </div>
+  <div id='mg-app'></div></div>`;}
+
 /* ══ RENDERERS MAP ══ */
 const RND={
   'anglais/fiches/verbes-irreguliers_fiche':{fn:rFiche,title:'Verbes Irréguliers',sub:'Fiche · Anglais'},
   'anglais/exercices/verbes-irreguliers_quizlet':{fn:rQuizlet,title:'Verbes Irréguliers',sub:'Quizlet · Anglais'},
+  'anglais/fiches/aussie-experience_fiche':{fn:rAussieFiche,title:'The Aussie Experience — Vocabulaire',sub:'Fiche · Anglais'},
+  'anglais/exercices/aussie-experience_quizlet':{fn:rAussieQuizlet,title:'The Aussie Experience',sub:'Quizlet · Anglais'},
   'espagnol/fiches/verbes-irreguliers-present_fiche':{fn:rFicheEsp,title:'Verbes Irréguliers — Présent',sub:'Fiche · Espagnol'},
   'espagnol/fiches/conjugaisons_fiche':{fn:rConjFiche,title:'Conjugaisons — Tous les temps',sub:'Fiche · Espagnol'},
   'espagnol/exercices/conjugaisons_quizlet':{fn:rConjQuizlet,title:'Conjugaisons',sub:'Quizlet · Espagnol'},
   'francais/fiches/figures-de-style_fiche':{fn:rFiguresFiche,title:'Figures de Style — Cours',sub:'Fiche · Français'},
   'francais/fiches/figures-de-style-exemples-litteraires_fiche':{fn:rFiguresExFiche,title:'Figures de Style — Exemples littéraires',sub:'Fiche · Français'},
   'francais/exercices/figures-de-style_quizlet':{fn:rFiguresQuizlet,title:'Figures de Style',sub:'Quizlet · Français'},
+  'histgeo/fiches/migrations_fiche':{fn:rMigrFiche,title:'Un monde de migrants — Ch.11',sub:'Fiche · Histoire-Géo'},
+  'histgeo/exercices/migrations_quizlet':{fn:rMigrQuizlet,title:'Un monde de migrants',sub:'Quizlet · Histoire-Géo'},
+  'maths/fiches/probabilites_fiche':{fn:rProbaFiche,title:'Probabilités — Ch.12',sub:'Fiche · Mathématiques'},
+  'maths/exercices/probabilites_quizlet':{fn:rProbaQuizlet,title:'Probabilités',sub:'Quizlet · Mathématiques'},
   'utilitaire/fiches/prompt-global_ia-juliette':{fn:rPrompt,title:'Prompt global Ia Juliette',sub:'Guide · Utilitaire'}
 };
 
@@ -839,7 +1376,10 @@ function openDoc(mid,sf,did){
   show('doc');window.scrollTo(0,0);
   if(did.includes('quizlet')&&did!=='conjugaisons_quizlet'){const _s=sh(VERBS);qDk=qSerieN>0?_s.slice(0,qSerieN):_s;fDk=[...qDk];qI=0;qSc=0;qTot=0;fI=0;fFl=false;}
   if(did==='conjugaisons_quizlet'){cqRender();}
-  if(did==='figures-de-style_quizlet'){frRender();}}
+  if(did==='figures-de-style_quizlet'){frRender();}
+  if(did==='probabilites_quizlet'){pbRender();}
+  if(did==='aussie-experience_quizlet'){auRender();}
+  if(did==='migrations_quizlet'){mgRender();}}
 
 function goBack(){
   stack.pop();
