@@ -201,7 +201,7 @@ const MATS=[
   ],corrections:[]}},
   {id:"maths",name:"Mathématiques",emoji:"🔢",color:"#9b59b6",bb:"#f5eef8",bt:"#9b59b6",docs:{fiches:[{id:"probabilites_fiche",name:"Probabilités — Ch.12",lbl:"Fiche",ic:"🎲"}],exercices:[{id:"probabilites_quizlet",name:"Probabilités",lbl:"Quizlet",ic:"🎯"}],corrections:[]}},
   {id:"histgeo",name:"Histoire-Géo",emoji:"🌍",color:"#e67e22",bb:"#fef5e7",bt:"#e67e22",docs:{
-    fiches:[{id:"migrations_fiche",name:"Un monde de migrants — Ch.11",lbl:"Fiche",ic:"🌍"}],
+    fiches:[{id:"migrations_fiche",name:"Un monde de migrants",lbl:"Fiche",ic:"🌍"},{id:"migrations_carte-mentale",name:"Un monde de migrants — Carte mentale",lbl:"Carte",ic:"🗂️"},{id:"migrations_croquis",name:"Un monde de migrants — Croquis interactif",lbl:"Croquis",ic:"🗺️"}],
     exercices:[{id:"migrations_quizlet",name:"Un monde de migrants",lbl:"Quizlet",ic:"🎯"}],
     corrections:[]}},
   {id:"svt",name:"SVT",emoji:"🌿",color:"#27ae60",bb:"#eafaf1",bt:"#27ae60",docs:{fiches:[],exercices:[],corrections:[]}},
@@ -1131,88 +1131,85 @@ function rAussieQuizlet(){
   </div>
   <div id='au-app'></div></div>`;}
 
+
 /* ══ HISTOIRE-GÉO DATA ══ */
 const MIGR_VOCAB=[
-  {id:'v1', q:"Un migrant",                     a:"Une personne qui quitte son pays ou sa région pour s'installer ailleurs."},
-  {id:'v2', q:"Un pôle migratoire",             a:"Une région de départ ou d'arrivée des migrants."},
-  {id:'v3', q:"Un flux migratoire",             a:"Le mouvement de migrants d'une région vers une autre."},
-  {id:'v4', q:"Une zone de départ",             a:"Région d'où partent les migrants (pays pauvres ou en conflit)."},
-  {id:'v5', q:"Une région d'arrivée",           a:"Région où arrivent les migrants (pays riches ou stables)."},
-  {id:'v6', q:"Le renforcement des frontières", a:"Rendre les frontières plus difficiles à franchir (murs, contrôles)."},
-  {id:'v7', q:"Un réfugié",                     a:"Personne contrainte de fuir son pays à cause d'un conflit ou d'une persécution."},
-  {id:'v8', q:"Un migrant économique",          a:"Personne qui migre pour améliorer ses conditions de vie (travail, salaire)."},
-  {id:'v9', q:"Un croquis",                     a:"Représentation cartographique simplifiée d'un phénomène géographique."},
-  {id:'v10',q:"Un planisphère",                 a:"Carte représentant la totalité du globe terrestre sur un plan."},
-  {id:'d1', q:"Afrique de l'Ouest — pourquoi zone de départ ?",  a:"Pauvreté, instabilité politique."},
-  {id:'d2', q:"Maghreb — pourquoi zone de départ ?",             a:"Chômage, conflits régionaux."},
-  {id:'d3', q:"Mexique / Amérique Centrale — raison de départ ?",a:"Pauvreté, violence des cartels."},
-  {id:'d4', q:"Moyen-Orient — raison de départ ?",               a:"Conflits armés (Syrie, Irak...)."},
-  {id:'d5', q:"Sous-continent Indien — raison de départ ?",      a:"Surpopulation, pauvreté."},
-  {id:'a1', q:"Europe Occidentale — pourquoi région d'arrivée ?",a:"Richesse, stabilité, droits sociaux."},
-  {id:'a2', q:"Amérique du Nord — pourquoi région d'arrivée ?",  a:"Économie puissante, emplois disponibles."},
-  {id:'a3', q:"Péninsule Arabique — pourquoi région d'arrivée ?",a:"Besoins importants en main-d'œuvre."},
-  {id:'a4', q:"Australie — pourquoi région d'arrivée ?",         a:"Emploi, qualité de vie élevée."},
-  {id:'e1', q:"Effets des migrations pour les pays d'arrivée ?", a:"Main-d'œuvre disponible, diversité culturelle, tensions sociales, renforcement des frontières."},
-  {id:'e2', q:"Effets des migrations pour les pays de départ ?", a:"Envoi d'argent aux familles, mais perte de population active (fuite des cerveaux)."},
-  {id:'e3', q:"Différence réfugié / migrant économique ?",       a:"Le réfugié fuit un conflit. Le migrant économique part améliorer ses conditions de vie."},
+  {id:'v1', q:"Un migrant",                     a:"Personne qui quitte son pays ou sa région pour s'installer ailleurs."},
+  {id:'v2', q:"Un flux migratoire",             a:"Mouvement de migrants d'une région vers une autre."},
+  {id:'v3', q:"Un pôle migratoire",             a:"Zone importante de départ ou d'arrivée des migrants."},
+  {id:'v4', q:"Un pays d'accueil",              a:"Pays qui reçoit des migrants sur son territoire."},
+  {id:'v5', q:"Un réfugié",                     a:"Personne contrainte de fuir son pays à cause d'un conflit ou d'une persécution."},
+  {id:'v6', q:"Un migrant économique",          a:"Personne qui migre pour améliorer ses conditions de vie (travail, salaire)."},
+  {id:'v7', q:"Le bassin méditerranéen",        a:"Zone de passage entre l'Afrique et l'Europe, traversée par de nombreux migrants."},
+  {id:'v8', q:"Les remises",                    a:"Argent envoyé par les migrants à leur famille restée dans le pays d'origine."},
+  {id:'v9', q:"La route des Balkans",           a:"Route migratoire passant par la Turquie et la Grèce pour rejoindre l'Europe."},
+  {id:'v10',q:"Un croquis",                     a:"Représentation cartographique simplifiée d'un phénomène géographique."},
+  {id:'m1', q:"Quels pays africains sont des zones de départ importantes vers l'Europe ?", a:"Le Nigéria, le Mali, le Togo (Afrique de l'Ouest)."},
+  {id:'m2', q:"Quelle route les migrants empruntent-ils depuis l'Afrique vers l'Europe ?", a:"Traversée du Sahara → Maghreb → Méditerranée (ou route des Balkans via Turquie/Grèce)."},
+  {id:'m3', q:"Depuis quand les flux migratoires vers l'Europe ont-ils fortement augmenté ?", a:"Depuis 2015 (crise des réfugiés)."},
+  {id:'e1', q:"Combien y avait-il de migrants dans le monde en 1970 ?", a:"75 millions de migrants."},
+  {id:'e2', q:"Qu'est-ce qui s'est passé en Syrie en 2011 ?", a:"Début d'un conflit armé qui a provoqué des millions de déplacements forcés."},
+  {id:'e3', q:"Depuis quand le nombre de migrants augmente-t-il fortement ?", a:"Depuis 2010, avec une accélération depuis 2015."},
+  {id:'c1', q:"Cite 2 causes des migrations liées aux conflits.", a:"La guerre en Syrie (depuis 2011), les conflits au Moyen-Orient et en Afrique."},
+  {id:'c2', q:"Cite 2 causes économiques des migrations.", a:"La pauvreté, le manque d'emploi, la recherche de meilleures conditions de vie."},
+  {id:'r1', q:"Que sont les remises ?", a:"L'argent envoyé par les migrants à leur famille restée au pays d'origine."},
+  {id:'r2', q:"Quel rôle jouent les remises pour les familles ?", a:"Elles aident les familles à subvenir à leurs besoins."},
+  {id:'a1', q:"Donne un exemple de flux migratoire en Asie-Pacifique.", a:"Migrations à l'intérieur de l'Asie vers l'Australie, le Japon ou les pays du Golfe."},
 ];
 
 function rMigrFiche(){
-  const sec=(emoji,title,color,rows,cols)=>`
+  const sec=(emoji,title,sub,color,rows,cols)=>`
     <div style="margin:0 0 14px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
-      <div style="background:${color};color:#fff;padding:10px 14px;display:flex;align-items:center;gap:7px">
-        <span style="font-size:1.1em">${emoji}</span>
-        <span style="font-weight:700;font-size:.92em">${title}</span>
+      <div style="background:${color};color:#fff;padding:10px 14px">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:1.1em">${emoji}</span>
+          <span style="font-weight:700;font-size:.92em">${title}</span>
+        </div>
+        ${sub?`<div style="color:rgba(255,255,255,.75);font-size:.75em;margin-top:2px">${sub}</div>`:''}
       </div>
       <table style="width:100%;border-collapse:collapse;font-size:.86em;background:#fff">
-        <thead style="background:${color}"><tr>${cols.map(c=>`<th style="padding:7px 10px;text-align:left;color:#fff;font-size:.85em">${c}</th>`).join('')}</tr></thead>
-        <tbody>${rows.map((r,i)=>`<tr style="${i%2?'':'background:'+color+'18'}">
-          <td style="padding:8px 10px;font-weight:700;color:${color}">${r[0]}</td>
-          <td style="padding:8px 10px">${r[1]}</td></tr>`).join('')}</tbody>
+        <thead><tr>${cols.map(c=>`<th style="padding:7px 10px;text-align:left;background:#f2f2f2;color:#666;font-size:.8em">${c}</th>`).join('')}</tr></thead>
+        <tbody>${rows.map((r,i)=>`<tr style="${i%2?'background:#fafafa':''}">
+          <td style="padding:8px 10px;font-weight:700;color:${color};vertical-align:top;width:38%">${r[0]}</td>
+          <td style="padding:8px 10px;vertical-align:top">${r[1]}</td></tr>`).join('')}</tbody>
       </table></div>`;
-
-  const effets=[
-    {t:"Pour les pays d'arrivée",    c:'#1a5276',items:["Main-d'œuvre disponible","Diversité culturelle","Tensions sociales possibles","Renforcement des frontières"]},
-    {t:"Pour les pays de départ",    c:'#c0392b',items:["Envoi d'argent aux familles (remises)","Perte de population active","Réduction de la surpopulation"]},
-    {t:"Pour les migrants",          c:'#ca6702',items:["Meilleures conditions de vie (souvent)","Voyage dangereux","Difficultés d'intégration","Parfois refus d'entrée"]},
-  ];
-  const steps=[
-    ["Étape 1","Prélève les informations : repère cercles (pôles), flèches (flux), triangles (frontières)."],
-    ["Étape 2","Organise la légende : 1. Espaces des migrations / 2. Flux et effets."],
-    ["Étape 3","Complète le croquis : colorie, trace, ajoute un titre."],
-    ["Étape 4","Rédige : décris les flux, les pôles, les causes et les effets."],
-  ];
-
-  return `<div style="background:#1a1a2e;color:#fff;border-radius:10px;padding:.75rem 1rem;margin:0 16px 14px;display:flex;justify-content:space-between;align-items:center">
-    <span style="font-weight:700">🌍 Un monde de migrants</span>
-    <span style="color:#f0c040;font-size:.8rem">Géo · Ch.11</span>
+  return `<div style="background:#1a1a2e;color:#fff;border-radius:10px;padding:.75rem 1rem;margin:0 16px 14px">
+    <div style="font-weight:700">🌍 Un monde de migrants</div>
+    <div style="color:rgba(255,255,255,.6);font-size:.78rem;margin-top:2px">Séance 1 — Des migrations internationales de plus en plus nombreuses</div>
   </div>
   <div style="padding:0 16px">
-  ${sec('📖','Vocabulaire essentiel','#c0392b',
+  ${sec('📘','Vocabulaire clé','10 notions à maîtriser','#e67e22',
     MIGR_VOCAB.slice(0,10).map(c=>[c.q,c.a]),
     ['🔑 Notion','📝 Définition'])}
-  ${sec('🔴','Zones de départ','#ca6702',
-    [["Afrique de l'Ouest","Pauvreté, instabilité politique"],["Maghreb","Chômage, conflits régionaux"],["Mexique / Amérique Centrale","Pauvreté, violence des cartels"],["Sous-continent Indien","Surpopulation, pauvreté"],["Moyen-Orient","Conflits armés (Syrie, Irak...)"]],
-    ['📍 Région','💡 Causes'])}
-  ${sec('🟢','Régions d\'arrivée','#1e8449',
-    [["Europe Occidentale","Richesse, stabilité, droits"],["Amérique du Nord","Économie puissante, emploi"],["Péninsule Arabique","Besoins en main-d'œuvre"],["Australie","Emploi, cadre de vie"]],
-    ['📍 Région','💡 Attractivité'])}
-  <div style="margin-bottom:14px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
-    <div style="background:#1a5276;color:#fff;padding:10px 14px;font-weight:700;font-size:.92em">⚡ Les effets des migrations</div>
-    <div style="background:#fff;padding:10px 14px">
-      ${effets.map(e=>`<div style="margin-bottom:8px;background:${e.c}18;border-radius:8px;padding:9px 12px">
-        <div style="font-weight:700;color:${e.c};font-size:.88em;margin-bottom:4px">${e.t}</div>
-        <ul style="margin:0;padding-left:14px;font-size:.85em">${e.items.map(i=>`<li>${i}</li>`).join('')}</ul>
-      </div>`).join('')}
-    </div></div>
-  <div style="margin-bottom:14px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
-    <div style="background:#6c3483;color:#fff;padding:10px 14px;font-weight:700;font-size:.92em">🗺️ Méthode — Réaliser un croquis</div>
-    <div style="background:#fff;padding:10px 14px">
-      ${steps.map(([n,c])=>`<div style="border-left:4px solid #6c3483;padding:8px 12px;margin-bottom:8px;background:#e8daef30;border-radius:0 8px 8px 0">
-        <div style="font-weight:700;color:#6c3483;font-size:.88em">${n}</div>
-        <div style="font-size:.85em;margin-top:3px">${c}</div>
-      </div>`).join('')}
-    </div></div>
+  ${sec('🗺️','I-A. Le bassin méditerranéen : l\'Europe et l\'Afrique','Un flux migratoire majeur — de l\'Afrique vers l\'Europe','#c0392b',
+    [["Pays de départ (Afrique de l'Ouest)","<b>Nigéria, Mali, Togo</b> : pauvreté, instabilité politique."],
+     ["Route terrestre","Les migrants traversent le désert (Sahara) pour atteindre le Maghreb."],
+     ["Route maritime","Ils traversent la Méditerranée pour rejoindre l'Europe (Italie, Grèce)."],
+     ["Route des Balkans","Via la <b>Turquie</b> et la <b>Grèce</b>, depuis 2015 : forte augmentation."],
+     ["Depuis 2015","Grande vague migratoire, dont des demandeurs de protection internationale."]],
+    ['Élément','Description'])}
+  ${sec('🌏','I-B. L\'Asie-Pacifique (autre exemple)','Des flux migratoires importants à l\'intérieur du continent','#2980b9',
+    [["Flux intra-asiatiques","Migrations importantes à l'intérieur du continent (vers les pays plus riches)."],
+     ["Exemples","Migration vers l'<b>Australie</b>, le <b>Japon</b>, les <b>pays du Golfe</b>."],
+     ["Causes principales","Surpopulation, pauvreté, recherche d'emploi."]],
+    ['Élément','Description'])}
+  ${sec('📈','II. L\'évolution des flux migratoires depuis 2010','Une augmentation mondiale et accélérée','#27ae60',
+    [["1970","<b>75 millions</b> de migrants dans le monde."],
+     ["Depuis 2010","Forte augmentation du nombre de migrants à l'échelle mondiale."],
+     ["2011","Début du <b>conflit en Syrie</b> : millions de déplacements forcés."],
+     ["Depuis 2015","Grande vague migratoire vers l'Europe : crise des réfugiés."]],
+    ['Date / Période','Événement'])}
+  ${sec('⚠️','Les causes de l\'augmentation des migrations','4 catégories principales','#e67e22',
+    [["Conflits armés","Guerre en <b>Syrie</b> depuis 2011, conflits au Moyen-Orient et en Afrique."],
+     ["Instabilité politique","Gouvernements instables, violences, persécutions."],
+     ["Pauvreté","Manque d'emploi, difficultés économiques dans les pays de départ."],
+     ["Hausse des remises","L'envoi d'argent encourage d'autres personnes à migrer."]],
+    ['Cause','Explication'])}
+  ${sec('💸','Les remises : une façon de dépasser les difficultés','Un rôle économique essentiel','#8e44ad',
+    [["Définition","Argent envoyé par les migrants à leur famille restée au pays d'origine."],
+     ["Rôle","Une façon de dépasser les difficultés économiques pour les familles et les pays de départ."],
+     ["Importance","Source de revenus <b>majeure</b> pour de nombreux pays en développement."]],
+    ['Aspect','Explication'])}
   </div>`;}
 
 /* ── Migr Quizlet state ── */
@@ -1229,7 +1226,7 @@ function mgRender(){
   if(!mgDk.length)mgBuild();
   if(mgIdx>=mgDk.length){mgDone();return;}
   const c=mgDk[mgIdx];const pct=mgDk.length?Math.round(mgIdx/mgDk.length*100):0;
-  const sB=[5,10,[0,'Tout']].map(o=>{const v=Array.isArray(o)?o[0]:o;const l=Array.isArray(o)?o[1]:o;return`<button onclick='mgSetSerie(${v})' style='padding:.2rem .6rem;border-radius:8px;border:1.5px solid #c0392b;background:${mgSN===v?'#c0392b':'transparent'};color:${mgSN===v?'#fff':'#c0392b'};font-size:.75rem;font-weight:700;cursor:pointer'>${l}</button>`;}).join('');
+  const sB=[5,10,20,[0,'Tout']].map(o=>{const v=Array.isArray(o)?o[0]:o;const l=Array.isArray(o)?o[1]:o;return`<button onclick='mgSetSerie(${v})' style='padding:.2rem .6rem;border-radius:8px;border:1.5px solid #e67e22;background:${mgSN===v?'#e67e22':'transparent'};color:${mgSN===v?'#fff':'#e67e22'};font-size:.75rem;font-weight:700;cursor:pointer'>${l}</button>`;}).join('');
   if(mgMode==='fc'){
     const star=mgReview.has(c.id);
     app.innerHTML=`
@@ -1244,17 +1241,17 @@ function mgRender(){
       </div></div>
     <div style='background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.1);min-height:170px;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;cursor:pointer;margin-bottom:10px' onclick='mgFlip()'>
       <div>
-        <div style='font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#c0392b;margin-bottom:8px'>${mgFl?'Définition':'Notion'}</div>
+        <div style='font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#e67e22;margin-bottom:8px'>${mgFl?'Définition':'Notion'}</div>
         <div style='font-size:1.1rem;font-weight:700;color:#1a1a2e;line-height:1.45'>${mgFl?c.a:c.q}</div>
         ${!mgFl?'<div style="font-size:.75rem;color:#aaa;margin-top:10px">Touchez pour retourner</div>':''}
       </div></div>
     <div style='display:flex;gap:.4rem;justify-content:center;margin-bottom:.5rem'>
-      <button onclick='mgNav(-1)' ${mgIdx===0?'disabled':''} style='padding:8px 16px;border-radius:10px;border:none;background:#aaa;color:#fff;font-weight:700;cursor:pointer'>◀</button>
-      <button onclick='mgFlip()' style='padding:8px 16px;border-radius:10px;border:none;background:#c0392b;color:#fff;font-weight:700;cursor:pointer'>🔄</button>
-      <button onclick='mgNav(1)' ${mgIdx===mgDk.length-1?'disabled':''} style='padding:8px 16px;border-radius:10px;border:none;background:#c0392b;color:#fff;font-weight:700;cursor:pointer'>▶</button>
+      <button onclick='mgNav(-1)' ${mgIdx===0?'disabled':''} style='padding:8px 16px;border-radius:10px;border:none;background:#aaa;color:#fff;font-weight:700;cursor:pointer'>◄</button>
+      <button onclick='mgFlip()' style='padding:8px 16px;border-radius:10px;border:none;background:#e67e22;color:#fff;font-weight:700;cursor:pointer'>🔄</button>
+      <button onclick='mgNav(1)' ${mgIdx===mgDk.length-1?'disabled':''} style='padding:8px 16px;border-radius:10px;border:none;background:#e67e22;color:#fff;font-weight:700;cursor:pointer'>►</button>
     </div>
     <div style='height:5px;background:#e0e4f0;border-radius:3px;overflow:hidden'>
-      <div style='height:100%;background:#c0392b;width:${pct}%;transition:width .3s'></div></div>`;
+      <div style='height:100%;background:#e67e22;width:${pct}%;transition:width .3s'></div></div>`;
   } else {
     const choices=mgChoices(c);
     app.innerHTML=`
@@ -1273,7 +1270,7 @@ function mgRender(){
       ${choices.map(ch=>`<button onclick='mgAns(this,"${ch.id}","${c.id}")' style='padding:11px 14px;background:#fff;border:2px solid #e8eaf0;border-radius:10px;font-size:.9em;cursor:pointer;color:#333;text-align:left;box-shadow:0 1px 4px rgba(0,0,0,.05)'>${ch.a}</button>`).join('')}
     </div>
     <div id='mg-fb' style='text-align:center;min-height:22px;font-size:.9em;font-weight:600;margin-bottom:8px'></div>
-    <button id='mg-next' onclick='mgNext()' style='display:block;width:100%;padding:11px;background:#c0392b;color:#fff;border:none;border-radius:10px;font-size:.93em;cursor:pointer;font-weight:600;opacity:0' disabled>Question suivante →</button>`;
+    <button id='mg-next' onclick='mgNext()' style='display:block;width:100%;padding:11px;background:#e67e22;color:#fff;border:none;border-radius:10px;font-size:.93em;cursor:pointer;font-weight:600;opacity:0' disabled>Question suivante →</button>`;
   }
 }
 function mgFlip(){mgFl=!mgFl;mgRender();}
@@ -1303,20 +1300,51 @@ function mgDone(){const pct=mgTot?Math.round(mgSc/mgTot*100):0;const app=documen
 
 function rMigrQuizlet(){
   mgBuild();
-  const sB=[5,10,[0,'Tout']].map(o=>{const v=Array.isArray(o)?o[0]:o;const l=Array.isArray(o)?o[1]:o;return`<button onclick='mgSetSerie(${v})' style='padding:.25rem .7rem;border-radius:10px;border:2px solid #c0392b;background:${mgSN===v?'#c0392b':'transparent'};color:${mgSN===v?'#fff':'#c0392b'};font-size:.78rem;font-weight:600;cursor:pointer'>${l}</button>`;}).join('');
+  const sB=[5,10,20,[0,'Tout']].map(o=>{const v=Array.isArray(o)?o[0]:o;const l=Array.isArray(o)?o[1]:o;return`<button onclick='mgSetSerie(${v})' style='padding:.25rem .7rem;border-radius:10px;border:2px solid #e67e22;background:${mgSN===v?'#e67e22':'transparent'};color:${mgSN===v?'#fff':'#e67e22'};font-size:.78rem;font-weight:600;cursor:pointer'>${l}</button>`;}).join('');
   return `<div style='padding:0 6px'>
   <div style='background:#1a1a2e;color:#fff;border-radius:10px;padding:.8rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem'>
     <span style='font-weight:700'>🌍 Un monde de migrants</span>
-    <span style='color:#f0c040;font-size:.8rem'>Géo · Ch.11</span>
+    <span style='color:#f0c040;font-size:.8rem'>Histoire-Géo</span>
   </div>
   <div style='display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.5rem .8rem;margin-bottom:.5rem'>
-    <button onclick='mgSetMode("fc")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #c0392b;background:${mgMode==="fc"?'#c0392b':'transparent'};color:${mgMode==="fc"?'#fff':'#c0392b'};font-size:.82rem;font-weight:600;cursor:pointer'>🃏 Flashcards</button>
-    <button onclick='mgSetMode("qcm")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #c0392b;background:${mgMode==="qcm"?'#c0392b':'transparent'};color:${mgMode==="qcm"?'#fff':'#c0392b'};font-size:.82rem;font-weight:600;cursor:pointer'>🎯 QCM</button>
-  </div>
-  <div style='display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;background:#fff;border-radius:8px;padding:.4rem .8rem;margin-bottom:.5rem'>
-    <span style='font-size:.78rem;color:#999;font-weight:700'>Série :</span>${sB}
+    <button onclick='mgSetMode("fc")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #e67e22;background:${mgMode==="fc"?"#e67e22":"transparent"};color:${mgMode==="fc"?"#fff":"#e67e22"};font-size:.82rem;font-weight:600;cursor:pointer'>🏽 Flashcards</button>
+    <button onclick='mgSetMode("qcm")' style='padding:.35rem .9rem;border-radius:12px;border:2px solid #e67e22;background:${mgMode==="qcm"?"#e67e22":"transparent"};color:${mgMode==="qcm"?"#fff":"#e67e22"};font-size:.82rem;font-weight:600;cursor:pointer'>🎯 QCM</button>
   </div>
   <div id='mg-app'></div></div>`;}
+
+function rMigrCM(){
+  const branch=(emoji,title,sub,color,items)=>`
+    <div style="margin-bottom:12px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+      <div style="background:${color};padding:10px 14px">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:1.1em">${emoji}</span>
+          <span style="font-weight:700;font-size:.92em;color:#fff">${title}</span>
+        </div>
+        ${sub?`<div style="color:rgba(255,255,255,.75);font-size:.73em;margin-top:2px">${sub}</div>`:''}
+      </div>
+      <div style="background:#fff;padding:10px 14px">
+        ${items.map(([k,v])=>`<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:.87em;line-height:1.4">
+          <span style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;margin-top:4px;display:inline-block"></span>
+          <div><b style="color:${color}">${k}</b> <span style="color:#444">${v}</span></div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  return `<div style="background:#1a1a2e;color:#fff;border-radius:10px;padding:.75rem 1rem;margin:0 16px 12px">
+    <div style="font-weight:700">🌍 Carte mentale — Migrations internationales</div>
+    <div style="color:rgba(255,255,255,.6);font-size:.78rem;margin-top:2px">Séance 1 · Histoire-Géo</div>
+  </div>
+  <div style="padding:0 16px">
+  ${branch('📘','Vocabulaire clé','Notions essentielles','#e67e22',
+    [['Un migrant','— quitte son pays pour s\'installer ailleurs'],['Un flux migratoire','— mouvement de migrants d\'une région vers une autre'],['Un pôle migratoire','— zone importante de départ ou d\'arrivée'],['Un réfugié','— fuit un conflit ou une persécution'],['Un migrant économique','— cherche de meilleures conditions de vie'],["Un pays d'accueil","— reçoit des migrants sur son territoire"]])}
+  ${branch('🗺️','Les grands flux migratoires','I-A Méditerranée · I-B Asie-Pacifique','#c0392b',
+    [['I-A — Pays de départ :','Nigéria, Mali, Togo (pauvreté, instabilité)'],['Route terrestre :','Sahara → Maghreb'],['Route maritime :','Méditerranée → Italie / Grèce'],['Route des Balkans :','Turquie → Grèce → Europe (depuis 2015)'],['I-B — Flux intra-asiatiques :','vers Australie, Japon, pays du Golfe']])}
+  ${branch('📈','Évolution des flux depuis 2010','Une augmentation mondiale et accélérée','#27ae60',
+    [['1970 :','75 millions de migrants dans le monde'],['Depuis 2010 :','forte augmentation mondiale'],['2011 :','début du conflit en Syrie → millions de déplacements'],['Depuis 2015 :','crise des réfugiés en Europe']])}
+  ${branch('⚠️','Les causes des migrations','4 grandes catégories','#2980b9',
+    [['Conflits armés :','guerre en Syrie (2011), Moyen-Orient, Afrique'],['Instabilité politique :','violences, persécutions'],['Pauvreté :','manque d\'emploi, difficultés économiques'],['Hausse des remises :','encourage d\'autres personnes à migrer']])}
+  ${branch('💸','Les remises','Une façon de dépasser les difficultés','#8e44ad',
+    [['Définition :','argent envoyé au pays d\'origine par les migrants'],['Rôle :','aide les familles à subvenir à leurs besoins'],['Importance :','source de revenus majeure pour les pays en développement']])}
+  </div>`;}
 
 /* ══ RENDERERS MAP ══ */
 const RND={
@@ -1330,10 +1358,12 @@ const RND={
   'francais/fiches/figures-de-style_fiche':{fn:rFiguresFiche,title:'Figures de Style — Cours',sub:'Fiche · Français'},
   'francais/fiches/figures-de-style-exemples-litteraires_fiche':{fn:rFiguresExFiche,title:'Figures de Style — Exemples littéraires',sub:'Fiche · Français'},
   'francais/exercices/figures-de-style_quizlet':{fn:rFiguresQuizlet,title:'Figures de Style',sub:'Quizlet · Français'},
-  'histgeo/fiches/migrations_fiche':{fn:rMigrFiche,title:'Un monde de migrants — Ch.11',sub:'Fiche · Histoire-Géo'},
-  'histgeo/exercices/migrations_quizlet':{fn:rMigrQuizlet,title:'Un monde de migrants',sub:'Quizlet · Histoire-Géo'},
   'maths/fiches/probabilites_fiche':{fn:rProbaFiche,title:'Probabilités — Ch.12',sub:'Fiche · Mathématiques'},
   'maths/exercices/probabilites_quizlet':{fn:rProbaQuizlet,title:'Probabilités',sub:'Quizlet · Mathématiques'},
+  'histgeo/fiches/migrations_fiche':{fn:rMigrFiche,title:'Un monde de migrants',sub:'Fiche · Histoire-Géo'},
+  'histgeo/fiches/migrations_carte-mentale':{fn:rMigrCM,title:'Un monde de migrants — Carte mentale',sub:'Carte · Histoire-Géo'},
+  'histgeo/fiches/migrations_croquis':{fn:()=>`<iframe src='./app/Histoire-Géographie/fiches/migrations_croquis.html' style='width:100%;height:calc(100vh - 80px);border:none'></iframe>`,title:'Un monde de migrants — Croquis',sub:'Croquis interactif · Histoire-Géo'},
+  'histgeo/exercices/migrations_quizlet':{fn:rMigrQuizlet,title:'Un monde de migrants',sub:'Quizlet · Histoire-Géo'},
   'utilitaire/fiches/prompt-global_ia-juliette':{fn:rPrompt,title:'Prompt global Ia Juliette',sub:'Guide · Utilitaire'}
 };
 
