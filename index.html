@@ -206,7 +206,7 @@ const MATS=[
     corrections:[]}},
   {id:"svt",name:"SVT",emoji:"🌿",color:"#27ae60",bb:"#eafaf1",bt:"#27ae60",docs:{fiches:[],exercices:[],corrections:[]}},
   {id:"pc",name:"Physique-Chimie",emoji:"⚗️",color:"#16a085",bb:"#e8f8f5",bt:"#16a085",docs:{fiches:[],exercices:[],corrections:[]}},
-  {id:"espagnol",name:"Espagnol",emoji:"🇪🇸",color:"#f39c12",bb:"#fef9e7",bt:"#d68910",docs:{fiches:[{id:"verbes-irreguliers-present_fiche",name:"Verbes Irréguliers — Présent",lbl:"Fiche",ic:"📋"},{id:"conjugaisons_fiche",name:"Conjugaisons — Tous les temps",lbl:"Fiche",ic:"📚"}],exercices:[{id:"conjugaisons_quizlet",name:"Conjugaisons",lbl:"Quizlet",ic:"🎯"}],corrections:[]}},
+  {id:"espagnol",name:"Espagnol",emoji:"🇪🇸",color:"#f39c12",bb:"#fef9e7",bt:"#d68910",docs:{fiches:[{id:"verbes-irreguliers-present_fiche",name:"Verbes Irréguliers — Présent",lbl:"Fiche",ic:"📋"},{id:"conjugaisons_fiche",name:"Conjugaisons — Tous les temps",lbl:"Fiche",ic:"📚"},{id:"vocabulaire_3_fiche",name:"Vocabulaire — Liste n°3",lbl:"Fiche",ic:"📝"}],exercices:[{id:"conjugaisons_quizlet",name:"Conjugaisons",lbl:"Quizlet",ic:"🎯"},{id:"vocabulaire_3_quizlet",name:"Vocabulaire 1",lbl:"Quizlet",ic:"🎯"}],corrections:[]}},
   {id:"techno",name:"Technologie",emoji:"⚙️",color:"#2c3e50",bb:"#eaecee",bt:"#2c3e50",docs:{fiches:[],exercices:[],corrections:[]}},
   {id:"arts",name:"Arts Plastiques",emoji:"🎨",color:"#8e44ad",bb:"#f5eef8",bt:"#8e44ad",docs:{fiches:[],exercices:[],corrections:[]}},
   {id:"musique",name:"Éducation Musicale",emoji:"🎵",color:"#d35400",bb:"#fdf0e8",bt:"#d35400",docs:{fiches:[],exercices:[],corrections:[]}},
@@ -991,6 +991,55 @@ const AUSSIE_CARDS=[
   {id:'c18',cat:'general',en:'an opal',               fr:"une opale"},
 ];
 
+/* ── Données Vocabulaire Espagnol 1 ── */
+const VOCAB_ESP3_CATS=[
+  {id:'val', emoji:'🌟', label:'Valeurs et qualités',      color:'#1e618d', light:'#d6eaf8'},
+  {id:'fam', emoji:'👨‍👩‍👧', label:'Famille et personnes',    color:'#1e8449', light:'#d5f5e3'},
+  {id:'dom', emoji:'🏡', label:'Le domaine / la maison',   color:'#17738a', light:'#d1ecf1'},
+  {id:'nat', emoji:'🌿', label:'Nature et animaux',        color:'#922b21', light:'#fdd5d3'},
+  {id:'vrb', emoji:'🔤', label:'Verbes',                   color:'#6c3483', light:'#e8d5f5'},
+  {id:'exp', emoji:'💬', label:'Expressions courantes',    color:'#b45a0a', light:'#fdebd5'},
+];
+const VOCAB_ESP3_CARDS=[
+  {id:'v1',cat:'val',es:'ser valiente',       fr:'être courageux/se'},
+  {id:'v2',cat:'val',es:'talentoso/a',         fr:'talentueux/se'},
+  {id:'v3',cat:'val',es:'orgulloso/a',         fr:'fier/fière'},
+  {id:'v4',cat:'val',es:'la distinción',       fr:'la distinction'},
+  {id:'v5',cat:'val',es:'concentrado/a',       fr:'concentré/e'},
+  {id:'f1',cat:'fam',es:'los lazos familiares',fr:'les liens familiaux'},
+  {id:'f2',cat:'fam',es:'el padre',            fr:'le père'},
+  {id:'f3',cat:'fam',es:'los chiquillos',      fr:'les enfants (fam.)'},
+  {id:'f4',cat:'fam',es:'necesitado/a',        fr:'dans le besoin, nécessiteux'},
+  {id:'d1',cat:'dom',es:'la granja',           fr:'la ferme'},
+  {id:'d2',cat:'dom',es:'la cancha',           fr:'le terrain (de sport)'},
+  {id:'d3',cat:'dom',es:'el torreón',          fr:'la tour fortifiée'},
+  {id:'d4',cat:'dom',es:'la planta baja',      fr:'le rez-de-chaussée'},
+  {id:'d5',cat:'dom',es:'la planta alta',      fr:"l'étage"},
+  {id:'d6',cat:'dom',es:'el recibidor',        fr:"l'entrée / le vestibule"},
+  {id:'d7',cat:'dom',es:'el balconcito',       fr:'le petit balcon'},
+  {id:'d8',cat:'dom',es:'de madera',           fr:'en bois'},
+  {id:'n1',cat:'nat',es:'el amanecer',         fr:"l'aube"},
+  {id:'n2',cat:'nat',es:'el burro',            fr:"l'âne"},
+  {id:'n3',cat:'nat',es:'un ave',              fr:'un oiseau'},
+  {id:'r1',cat:'vrb',es:'deber',               fr:'devoir'},
+  {id:'r2',cat:'vrb',es:'crecer',              fr:'grandir'},
+  {id:'r3',cat:'vrb',es:'irse',                fr:'partir'},
+  {id:'r4',cat:'vrb',es:'optar',               fr:'choisir, opter'},
+  {id:'r5',cat:'vrb',es:'oír',                 fr:'entendre, écouter'},
+  {id:'r6',cat:'vrb',es:'desayunar',           fr:'prendre le petit-déjeuner'},
+  {id:'r7',cat:'vrb',es:'se asemeja a',        fr:'ressemble à'},
+  {id:'r8',cat:'vrb',es:'tener',               fr:'avoir'},
+  {id:'r9',cat:'vrb',es:'acabado/a',           fr:'fini/e, terminé/e'},
+  {id:'e1',cat:'exp',es:'a pesar de',          fr:'malgré'},
+  {id:'e2',cat:'exp',es:'quizás',              fr:'peut-être'},
+  {id:'e3',cat:'exp',es:'cada',                fr:'chaque'},
+  {id:'e4',cat:'exp',es:'sentados',            fr:'assis'},
+  {id:'e5',cat:'exp',es:'el dolor',            fr:'la douleur'},
+  {id:'e6',cat:'exp',es:'el viaje',            fr:'le voyage'},
+  {id:'e7',cat:'exp',es:'el calzado',          fr:'les chaussures'},
+  {id:'e8',cat:'exp',es:'amplias',             fr:'large(s)'},
+];
+
 /* ── Renderers Aussie ── */
 function rAussieFiche(){
   const catHtml=AUSSIE_CATS.map(cat=>{
@@ -1116,6 +1165,35 @@ function auDone(){const pct=auTot?Math.round(auSc/auTot*100):0;const app=documen
       <button onclick='auBuild();auRender()' style='padding:.5rem 1.2rem;border-radius:14px;border:none;background:#444;color:#fff;cursor:pointer;font-weight:600'>🔄 Nouvelle série</button>
       ${auReview.size>0?`<button onclick='auStartReview()' style='padding:.5rem 1.2rem;border-radius:14px;border:none;background:#f39c12;color:#fff;cursor:pointer;font-weight:600'>🔁 Réviser les erreurs (${auReview.size})</button>`:''}
     </div></div>`;}
+
+/* ── Renderer Vocabulaire Espagnol 1 — fiche ── */
+function rVocabEsp3Fiche(){
+  const catHtml=VOCAB_ESP3_CATS.map(cat=>{
+    const cards=VOCAB_ESP3_CARDS.filter(c=>c.cat===cat.id);
+    const rows=cards.map((c,i)=>`<tr style="${i%2?'background:#f9faff':''}">
+      <td style="font-weight:700;color:${cat.color};padding:8px 10px;font-size:.88em">${c.es}</td>
+      <td style="padding:8px 10px;font-size:.88em">${c.fr}</td></tr>`).join('');
+    return `<div style="margin:0 16px 16px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+      <div style="background:${cat.color};color:#fff;padding:11px 14px;display:flex;align-items:center;gap:8px">
+        <span style="font-size:1.2em">${cat.emoji}</span>
+        <span style="font-weight:700;font-size:.95em">${cat.label}</span>
+        <span style="margin-left:auto;font-size:.75em;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:12px">${cards.length} mots</span>
+      </div>
+      <table style="width:100%;border-collapse:collapse;background:#fff">
+        <thead><tr>
+          <th style="padding:7px 10px;text-align:left;background:${cat.color};color:#fff;font-size:.82em">🇪🇸 Espagnol</th>
+          <th style="padding:7px 10px;text-align:left;background:${cat.color};color:#fff;font-size:.82em">🇫🇷 Français</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;}).join('');
+  return `<div style="background:#1a1a2e;color:#fff;border-radius:10px;padding:.8rem 1rem;margin:0 16px 14px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-weight:700">🇪🇸 Vocabulaire — Liste n°3</span>
+    <span style="color:#f1948a;font-size:.8rem">Espagnol · 4ème · ${VOCAB_ESP3_CARDS.length} mots</span>
+  </div>${catHtml}`;}
+
+/* ── Renderer Vocabulaire Espagnol 1 — quizlet (iframe) ── */
+function rVocabEsp3Quizlet(){
+  return `<iframe src='../Espagnol/exercices/vocabulaire_3_quizlet.html' style='width:100%;height:calc(100vh - 80px);border:none'></iframe>`;}
 
 function rAussieQuizlet(){
   auBuild();
@@ -1355,6 +1433,8 @@ const RND={
   'espagnol/fiches/verbes-irreguliers-present_fiche':{fn:rFicheEsp,title:'Verbes Irréguliers — Présent',sub:'Fiche · Espagnol'},
   'espagnol/fiches/conjugaisons_fiche':{fn:rConjFiche,title:'Conjugaisons — Tous les temps',sub:'Fiche · Espagnol'},
   'espagnol/exercices/conjugaisons_quizlet':{fn:rConjQuizlet,title:'Conjugaisons',sub:'Quizlet · Espagnol'},
+  'espagnol/fiches/vocabulaire_3_fiche':{fn:rVocabEsp3Fiche,title:'Vocabulaire — Liste n°3',sub:'Fiche · Espagnol'},
+  'espagnol/exercices/vocabulaire_3_quizlet':{fn:rVocabEsp3Quizlet,title:'Vocabulaire 3',sub:'Quizlet · Espagnol'},
   'francais/fiches/figures-de-style_fiche':{fn:rFiguresFiche,title:'Figures de Style — Cours',sub:'Fiche · Français'},
   'francais/fiches/figures-de-style-exemples-litteraires_fiche':{fn:rFiguresExFiche,title:'Figures de Style — Exemples littéraires',sub:'Fiche · Français'},
   'francais/exercices/figures-de-style_quizlet':{fn:rFiguresQuizlet,title:'Figures de Style',sub:'Quizlet · Français'},
@@ -1404,7 +1484,8 @@ function openDoc(mid,sf,did){
   stack.push(did);hdr(r.title,r.sub,true);
   document.getElementById('dv').innerHTML=r.fn();
   show('doc');window.scrollTo(0,0);
-  if(did.includes('quizlet')&&did!=='conjugaisons_quizlet'){const _s=sh(VERBS);qDk=qSerieN>0?_s.slice(0,qSerieN):_s;fDk=[...qDk];qI=0;qSc=0;qTot=0;fI=0;fFl=false;}
+  const iframeQuizlets=['aussie-experience_quizlet','migrations_quizlet','vocabulaire_3_quizlet'];
+  if(did.includes('quizlet')&&did!=='conjugaisons_quizlet'&&!iframeQuizlets.includes(did)){const _s=sh(VERBS);qDk=qSerieN>0?_s.slice(0,qSerieN):_s;fDk=[...qDk];qI=0;qSc=0;qTot=0;fI=0;fFl=false;}
   if(did==='conjugaisons_quizlet'){cqRender();}
   if(did==='figures-de-style_quizlet'){frRender();}
   if(did==='probabilites_quizlet'){pbRender();}
